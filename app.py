@@ -74,28 +74,32 @@ costo_transaccion   = 0.001
 # ============================================================
 # CARGA DE DATOS
 # ============================================================
-if len(tickers) == 0:
-    st.warning("⚠️ Selecciona al menos una criptomoneda.")
-    st.stop()
-
 @st.cache_data(ttl=3600)
 def cargar_datos(tickers, inicio, fin):
-    datos = yf.download(
-        tickers, start=inicio, end=fin,
-        interval="1d", auto_adjust=True
-    )
-    if len(tickers) == 1:
-        datos.columns = pd.MultiIndex.from_product([datos.columns, tickers])
-    precios = datos["Close"].copy()
-    precios.columns = [c.replace("-USD", "") for c in precios.columns]
-    return precios.dropna()
+    try:
+        # Descargar cada ticker por separado y unir
+        frames = {}
+        for ticker in tickers:
+            df = yf.download(
+                ticker,
+                start=inicio,
+                end=fin,
+                interval="1d",
+                auto_adjust=True,
+                progress=False
+            )
+            if not df.empty:
+                frames[ticker.replace("-USD", "")] = df["Close"].squeeze()
 
-with st.spinner("📡 Descargando datos desde Yahoo Finance..."):
-    precios = cargar_datos(tickers, fecha_inicio, fecha_fin)
+        if not frames:
+            return pd.DataFrame()
 
-if precios.empty:
-    st.error("❌ No se pudieron cargar datos.")
-    st.stop()
+        precios = pd.DataFrame(frames)
+        return precios.dropna()
+
+    except Exception as e:
+        st.error(f"Error descargando datos: {e}")
+        return pd.DataFrame()
 
 # ============================================================
 # CÁLCULOS BASE
