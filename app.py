@@ -1,5 +1,5 @@
 # ============================================================
-# 💓 PULSE FUND — Concurso Analítica Financiera ITM 2026
+# PULSE FUND — Concurso Analítica Financiera ITM 2026
 # ============================================================
 
 import streamlit as st
@@ -10,13 +10,13 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import date, timedelta
 
-st.set_page_config(page_title="💓 Pulse Fund", page_icon="💓", layout="wide")
-st.title("💓 Pulse Fund")
+st.set_page_config(page_title="Pulse Fund", page_icon="📊", layout="wide")
+st.title("Pulse Fund")
 st.caption("Invertimos cuando el mercado tiene pulso fuerte. Cuando hay tormenta, esperamos.")
 st.divider()
 
 # ── SIDEBAR ──────────────────────────────────────────────────
-st.sidebar.header("⚙️ Parámetros")
+st.sidebar.header("Parámetros")
 
 criptos_disponibles = {
     "Bitcoin (BTC)":  "BTC-USD",
@@ -45,7 +45,7 @@ monto_inicial = st.sidebar.number_input(
 )
 
 st.sidebar.divider()
-st.sidebar.subheader("🎯 Parámetros Pulse Fund")
+st.sidebar.subheader("Parámetros Pulse Fund")
 ventana_momentum    = st.sidebar.slider("Ventana momentum (días):", 30, 90, 60)
 umbral_volatilidad  = st.sidebar.slider("Umbral volatilidad (% diario):", 1.0, 10.0, 6.0, 0.5)
 ventana_volatilidad = 21
@@ -89,7 +89,7 @@ if precios is None or precios.empty:
 if isinstance(precios, pd.Series):
     precios = precios.to_frame()
 
-st.sidebar.success(f"✅ {len(precios)} días cargados")
+st.sidebar.success(f" {len(precios)} días cargados")
 
 # ── CÁLCULOS BASE ─────────────────────────────────────────────
 retornos    = precios.pct_change().dropna()
@@ -103,7 +103,7 @@ def calcular_drawdown(serie):
 
 colores = {
     "BTC": "#F7931A", "ETH": "#627EEA",
-    "SOL": "#9945FF", "💓 Pulse Fund": "#00FF88"
+    "SOL": "#9945FF", "Pulse Fund": "#00FF88"
 }
 fill_colors = {
     "BTC": "rgba(247,147,26,0.15)",
@@ -196,15 +196,15 @@ def metricas_serie(serie, nombre):
 
 # ── TABS ──────────────────────────────────────────────────────
 tab1, tab2, tab3, tab4 = st.tabs([
-    "📊 Análisis Base",
-    "🎯 Estrategia Pulse Fund",
-    "📉 Elemento Cripto",
-    "👤 Recomendación al Inversor"
+    "Análisis Base",
+    "Estrategia Pulse Fund",
+    "Elemento Cripto",
+    "Recomendación al Inversor"
 ])
 
 # ── TAB 1 ─────────────────────────────────────────────────────
 with tab1:
-    st.header("📊 Análisis Base")
+    st.header("Análisis Base")
 
     cols = st.columns(len(precios.columns))
     for i, cripto in enumerate(precios.columns):
@@ -235,7 +235,7 @@ with tab1:
         vol_df = volatilidad.reset_index()
         vol_df.columns = ["Cripto", "Volatilidad"]
         fig3 = px.bar(vol_df, x="Cripto", y="Volatilidad",
-                      title="⚡ Volatilidad anualizada",
+                      title="Volatilidad anualizada",
                       color="Cripto", color_discrete_map=colores, text_auto=".1%")
         fig3.update_layout(yaxis_tickformat=".0%", showlegend=False)
         st.plotly_chart(fig3, use_container_width=True)
@@ -244,13 +244,13 @@ with tab1:
         pct_neg = (retornos < 0).mean().reset_index()
         pct_neg.columns = ["Cripto", "Pct_Neg"]
         fig4 = px.bar(pct_neg, x="Cripto", y="Pct_Neg",
-                      title="📊 % días con retorno negativo",
+                      title="Porcentaje días con retorno negativo",
                       color="Cripto", color_discrete_map=colores, text_auto=".1%")
         fig4.update_layout(yaxis_tickformat=".0%", showlegend=False)
         st.plotly_chart(fig4, use_container_width=True)
 
     fig5 = px.line(portafolio, x=portafolio.index, y=portafolio.columns.tolist(),
-                   title=f"💰 Valor de ${monto_inicial:,} invertidos",
+                   title=f"Valor de ${monto_inicial:,} invertidos",
                    labels={"value": "Valor (USD)", "variable": "Cripto"},
                    color_discrete_map=colores)
     fig5.add_hline(y=monto_inicial, line_dash="dash", line_color="gray")
@@ -266,7 +266,7 @@ with tab1:
             fill="tozeroy",
             fillcolor=fill_colors.get(cripto, "rgba(128,128,128,0.1)")
         ))
-    fig6.update_layout(title="📉 Maximum Drawdown",
+    fig6.update_layout(title="Maximum Drawdown",
                        yaxis_tickformat=".0%", hovermode="x unified", height=400)
     st.plotly_chart(fig6, use_container_width=True)
 
@@ -281,7 +281,7 @@ with tab1:
 
 # ── TAB 2 ─────────────────────────────────────────────────────
 with tab2:
-    st.header("🎯 Estrategia Pulse Fund")
+    st.header("Estrategia Pulse Fund")
 
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Retorno Pulse Fund",  f"{retorno_total_pulse:+.1%}")
@@ -291,7 +291,7 @@ with tab2:
 
     st.divider()
 
-    bt_df = pd.DataFrame({"💓 Pulse Fund": acum_pulse * monto_inicial})
+    bt_df = pd.DataFrame({"📊 Pulse Fund": acum_pulse * monto_inicial})
     if acum_btc is not None:
         bt_df["🟠 Buy & Hold BTC"] = acum_btc * monto_inicial
     if acum_eth is not None:
@@ -299,10 +299,10 @@ with tab2:
     bt_df = bt_df.dropna()
 
     fig7 = px.line(bt_df, x=bt_df.index, y=bt_df.columns.tolist(),
-                   title=f"🎯 Backtesting — ${monto_inicial:,} iniciales",
+                   title=f"Backtesting — ${monto_inicial:,} iniciales",
                    labels={"value": "Valor (USD)", "variable": "Estrategia"},
                    color_discrete_map={
-                       "💓 Pulse Fund": "#00FF88",
+                       "📊 Pulse Fund": "#00FF88",
                        "🟠 Buy & Hold BTC": "#F7931A",
                        "🔵 Buy & Hold ETH": "#627EEA"
                    })
@@ -310,7 +310,7 @@ with tab2:
     fig7.update_layout(hovermode="x unified", height=450)
     st.plotly_chart(fig7, use_container_width=True)
 
-    rows = [metricas_serie(retornos_pulse, "💓 Pulse Fund")]
+    rows = [metricas_serie(retornos_pulse, "📊 Pulse Fund")]
     if "BTC" in retornos.columns:
         rows.append(metricas_serie(retornos["BTC"], "🟠 Buy & Hold BTC"))
     if "ETH" in retornos.columns:
@@ -319,7 +319,7 @@ with tab2:
 
     conteo = señal_diaria.value_counts()
     fig8 = px.bar(x=conteo.index, y=conteo.values,
-                  title="📊 Días en cada posición",
+                  title="Días en cada posición",
                   labels={"x": "Posición", "y": "Días"},
                   color=conteo.index,
                   color_discrete_map={"BTC": "#F7931A", "ETH": "#627EEA",
@@ -384,12 +384,12 @@ with tab3:
                       zmin=-1, zmax=1, text_auto=".2f")
     fig10.update_layout(height=380)
     st.plotly_chart(fig10, use_container_width=True)
-    st.info("💡 Alta correlación justifica la rotación — elegir la más fuerte cada mes "
+    st.info("Alta correlación justifica la rotación, elegir la más fuerte cada mes "
             "es más eficiente que diversificar entre activos que se mueven igual.")
 
 # ── TAB 4 ─────────────────────────────────────────────────────
 with tab4:
-    st.header("👤 Recomendación al Inversor")
+    st.header("Recomendación al Inversor")
 
     perfil = st.radio("Selecciona tu perfil:",
                       ["🛡️ Conservador", "⚖️ Moderado", "🚀 Agresivo"],
@@ -397,7 +397,7 @@ with tab4:
     st.divider()
 
     if "Conservador" in perfil:
-        st.subheader("🛡️ Perfil Conservador — Protección del capital")
+        st.subheader("Perfil Conservador — Protección del capital")
         dd_btc_val = calcular_drawdown(acum_btc).min() if acum_btc is not None else 0
         col1, col2 = st.columns(2)
         col1.metric("Max Drawdown Pulse Fund", f"{max_dd_pulse:.1%}")
@@ -410,7 +410,7 @@ with tab4:
         fig_c = go.Figure()
         fig_c.add_trace(go.Scatter(
             x=dd_pulse_serie.index, y=dd_pulse_serie,
-            name="💓 Pulse Fund", line=dict(color="#00FF88", width=2),
+            name="Pulse Fund", line=dict(color="#00FF88", width=2),
             fill="tozeroy", fillcolor="rgba(0,255,136,0.1)"
         ))
         if acum_btc is not None:
@@ -425,18 +425,18 @@ with tab4:
         st.plotly_chart(fig_c, use_container_width=True)
 
     elif "Moderado" in perfil:
-        st.subheader("⚖️ Perfil Moderado — Balance riesgo-retorno")
+        st.subheader("Perfil Moderado — Balance riesgo-retorno")
         col1, col2, col3 = st.columns(3)
         col1.metric("Retorno Pulse Fund", f"{retorno_total_pulse:+.1%}")
         col2.metric("Sharpe Ratio",       f"{sharpe_pulse:.2f}")
         col3.metric("Volatilidad",        f"{vol_pulse:.1%}")
-        st.info(f"💡 Pulse Fund creció **{retorno_total_pulse:+.1%}** desde {fecha_inicio} "
+        st.info(f"Pulse Fund creció **{retorno_total_pulse:+.1%}** desde {fecha_inicio} "
                 f"con Sharpe Ratio de **{sharpe_pulse:.2f}**.")
 
         fig_m = go.Figure()
         fig_m.add_trace(go.Scatter(
             x=acum_pulse.index, y=acum_pulse * monto_inicial,
-            name="💓 Pulse Fund", line=dict(color="#00FF88", width=3)
+            name="Pulse Fund", line=dict(color="#00FF88", width=3)
         ))
         if acum_btc is not None:
             fig_m.add_trace(go.Scatter(
@@ -450,11 +450,11 @@ with tab4:
         st.plotly_chart(fig_m, use_container_width=True)
 
     else:
-        st.subheader("🚀 Perfil Agresivo — Máximo momentum")
+        st.subheader("Perfil Agresivo — Máximo momentum")
         col1, col2 = st.columns(2)
         col1.metric("Retorno Pulse Fund", f"{retorno_total_pulse:+.1%}")
         col2.metric("Tiempo invertido",   f"{1-pct_efectivo:.1%}")
-        st.info("💡 Pulse Fund rota cada mes hacia la cripto con mayor momentum. "
+        st.info("Pulse Fund rota cada mes hacia la cripto con mayor momentum. "
                 "Siempre en la más fuerte — no atado a una sola.")
 
         conteo_agr = señal_diaria.value_counts()
