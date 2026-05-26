@@ -1,5 +1,5 @@
 # ============================================================
-# PULSE FUND — Concurso Analítica Financiera ITM 2026
+# 💓 PULSE FUND — Concurso Analítica Financiera ITM 2026
 # ============================================================
 
 import streamlit as st
@@ -10,276 +10,13 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import date, timedelta
 
-st.set_page_config(page_title="Pulse Fund", page_icon="📊", layout="wide")
-
-# ── CSS ──────────────────────────────────────────────────────
-st.markdown("""<style>
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-/* ── Fuerza fondo oscuro ── */
-.stApp, .main, .block-container {
-    background-color: #0f172a !important;
-    background: linear-gradient(135deg, #0a0a0a 0%, #111827 50%, #0f172a 100%) !important;
-}
-section[data-testid="stMain"] {
-    background: linear-gradient(135deg, #0a0a0a 0%, #111827 50%, #0f172a 100%) !important;
-}
-.stApp p, .stApp span, .stApp div {
-    color: #e2e8f0;
-}
-
-/* ── Fuente general ── */
-html, body, [class*="css"] {
-    font-family: 'Inter', sans-serif;
-}
-
-/* ── Fondo principal ── */
-.stApp {
-    background: linear-gradient(135deg, #0a0a0a 0%, #111827 50%, #0f172a 100%);
-    color: #f1f5f9;
-}
-
-/* ── Sidebar ── */
-[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #111827 0%, #1e293b 100%);
-    border-right: 1px solid #334155;
-}
-[data-testid="stSidebar"] * {
-    color: #e2e8f0 !important;
-}
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] span,
-[data-testid="stSidebar"] div {
-    color: #e2e8f0 !important;
-}
-[data-testid="stSidebar"] h1,
-[data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3 {
-    color: #00FF88 !important;
-}
-[data-testid="stSidebar"] input {
-    background-color: #1e293b !important;
-    color: #e2e8f0 !important;
-    border: 1px solid #334155 !important;
-    border-radius: 8px !important;
-}
-[data-testid="stNumberInput"] input {
-    background-color: #1e293b !important;
-    color: #e2e8f0 !important;
-    border: 1px solid #334155 !important;
-}
-[data-testid="stDateInput"] input {
-    background-color: #1e293b !important;
-    color: #e2e8f0 !important;
-    border: 1px solid #334155 !important;
-}
-
-/* ── Título principal ── */
-h1 {
-    background: linear-gradient(90deg, #00FF88, #00D4FF);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-size: 3rem !important;
-    font-weight: 700 !important;
-    letter-spacing: -1px;
-}
-
-/* ── Subtítulos ── */
-h2, h3 {
-    color: #e2e8f0 !important;
-    font-weight: 600 !important;
-}
-
-/* ── Tabs ── */
-[data-testid="stTabs"] button {
-    color: #94a3b8 !important;
-    font-weight: 500;
-    font-size: 0.95rem;
-    border-radius: 8px 8px 0 0;
-}
-[data-testid="stTabs"] button[aria-selected="true"] {
-    color: #00FF88 !important;
-    border-bottom: 2px solid #00FF88 !important;
-    background: rgba(0, 255, 136, 0.05) !important;
-}
-
-/* ── Métricas ── */
-[data-testid="stMetric"] {
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-    border: 1px solid #334155;
-    border-radius: 12px;
-    padding: 1rem 1.2rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-}
-[data-testid="stMetricLabel"] {
-    color: #94a3b8 !important;
-    font-size: 0.8rem !important;
-    font-weight: 500 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-[data-testid="stMetricValue"] {
-    color: #f1f5f9 !important;
-    font-size: 1.8rem !important;
-    font-weight: 700 !important;
-}
-[data-testid="stMetricDelta"] {
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-}
-
-/* ── Dataframes ── */
-[data-testid="stDataFrame"] {
-    border: 1px solid #334155 !important;
-    border-radius: 12px !important;
-    overflow: hidden;
-}
-[data-testid="stDataFrame"] table {
-    background-color: #1e293b !important;
-}
-[data-testid="stDataFrame"] th {
-    background-color: #0f172a !important;
-    color: #94a3b8 !important;
-    font-size: 0.8rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
-    border-bottom: 1px solid #334155 !important;
-}
-[data-testid="stDataFrame"] td {
-    background-color: #1e293b !important;
-    color: #e2e8f0 !important;
-    border-bottom: 1px solid #1e3a5f22 !important;
-}
-[data-testid="stDataFrame"] tr:hover td {
-    background-color: #263548 !important;
-}
-
-/* ── Botones radio ── */
-[data-testid="stRadio"] label {
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    color: #e2e8f0 !important;
-    transition: all 0.2s;
-}
-[data-testid="stRadio"] label:hover {
-    border-color: #00FF88;
-    background: rgba(0,255,136,0.05);
-}
-
-/* ── Info boxes ── */
-[data-testid="stInfo"] {
-    background: rgba(0, 255, 136, 0.05) !important;
-    border: 1px solid rgba(0, 255, 136, 0.2) !important;
-    border-radius: 10px !important;
-    color: #e2e8f0 !important;
-}
-
-/* ── Divider ── */
-hr {
-    border-color: #334155 !important;
-}
-
-/* ── Sliders ── */
-[data-testid="stSlider"] > div > div > div {
-    background: #00FF88 !important;
-}
-
-/* ── Multiselect tags ── */
-[data-testid="stMultiSelect"] span {
-    background: rgba(0, 255, 136, 0.15) !important;
-    border: 1px solid rgba(0, 255, 136, 0.3) !important;
-    color: #00FF88 !important;
-    border-radius: 6px !important;
-}
-
-/* ── Success box ── */
-[data-testid="stSuccess"] {
-    background: rgba(0, 255, 136, 0.1) !important;
-    border: 1px solid rgba(0, 255, 136, 0.3) !important;
-    border-radius: 10px !important;
-}
-
-/* ── Caption ── */
-.stCaption {
-    color: #64748b !important;
-    font-size: 0.8rem !important;
-}
-
-/* ── Cards personalizadas ── */
-.pulse-card {
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-    border: 1px solid #334155;
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin: 0.5rem 0;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-}
-.pulse-card-green {
-    background: linear-gradient(135deg, #064e3b, #065f46);
-    border: 1px solid #10b981;
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin: 0.5rem 0;
-}
-.pulse-highlight {
-    color: #00FF88;
-    font-weight: 700;
-}
-.pulse-tag {
-    display: inline-block;
-    background: rgba(0,255,136,0.15);
-    border: 1px solid rgba(0,255,136,0.3);
-    color: #00FF88;
-    border-radius: 20px;
-    padding: 0.2rem 0.8rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin: 0.2rem;
-}
-
-</style>""", unsafe_allow_html=True)
-# ── HEADER VISUAL ────────────────────────────────────────────
-st.markdown("""
-<div style="
-    background: linear-gradient(135deg, #064e3b 0%, #0f172a 60%);
-    border: 1px solid rgba(0,255,136,0.2);
-    border-radius: 20px;
-    padding: 2rem 2.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 8px 32px rgba(0,255,136,0.1);
-">
-    <p style="
-        background: linear-gradient(90deg, #00FF88, #00D4FF);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-size: 3rem;
-        font-weight: 800;
-        margin: 0 0 0.5rem 0;
-        letter-spacing: -1px;
-    ">💓 Pulse Fund</p>
-    <p style="color:#94a3b8; font-size:1.1rem; margin:0 0 1rem 0;">
-        Invertimos cuando el mercado tiene pulso fuerte. 
-        <span style="color:#00FF88; font-weight:600;">Cuando hay tormenta, esperamos.</span>
-    </p>
-    <div>
-        <span class="pulse-tag">💹 Momentum</span>
-        <span class="pulse-tag">🛡️ Filtro Volatilidad</span>
-        <span class="pulse-tag">🔄 Rebalanceo Mensual</span>
-        <span class="pulse-tag">📊 BTC · ETH · SOL</span>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+st.set_page_config(page_title="Pulse Fund", page_icon="💓", layout="wide")
+st.title("Pulse Fund")
+st.caption("Invertimos cuando el mercado tiene pulso fuerte. Cuando hay tormenta, esperamos.")
+st.divider()
 
 # ── SIDEBAR ──────────────────────────────────────────────────
 st.sidebar.header("⚙️ Parámetros")
-# ... resto del código
-
-# ── SIDEBAR ──────────────────────────────────────────────────
-st.sidebar.header("Parámetros")
 
 criptos_disponibles = {
     "Bitcoin (BTC)":  "BTC-USD",
@@ -352,7 +89,7 @@ if precios is None or precios.empty:
 if isinstance(precios, pd.Series):
     precios = precios.to_frame()
 
-st.sidebar.success(f" {len(precios)} días cargados")
+st.sidebar.success(f"✅ {len(precios)} días cargados")
 
 # ── CÁLCULOS BASE ─────────────────────────────────────────────
 retornos    = precios.pct_change().dropna()
@@ -481,10 +218,7 @@ with tab1:
                    title="Evolución de precios",
                    labels={"value": "Precio (USD)", "variable": "Cripto"},
                    color_discrete_map=colores)
-    fig1.update_layout(hovermode="x unified", height=400,
-    template="plotly_dark",
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)")
+    fig1.update_layout(hovermode="x unified", height=400)
     st.plotly_chart(fig1, use_container_width=True)
 
     precios_reb = (precios / precios.iloc[0]) * 100
@@ -493,10 +227,7 @@ with tab1:
                    labels={"value": "Rendimiento", "variable": "Cripto"},
                    color_discrete_map=colores)
     fig2.add_hline(y=100, line_dash="dash", line_color="gray")
-    fig2.update_layout(hovermode="x unified", height=400,
-    template="plotly_dark",
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)")
+    fig2.update_layout(hovermode="x unified", height=400)
     st.plotly_chart(fig2, use_container_width=True)
 
     col1, col2 = st.columns(2)
@@ -506,10 +237,7 @@ with tab1:
         fig3 = px.bar(vol_df, x="Cripto", y="Volatilidad",
                       title="Volatilidad anualizada",
                       color="Cripto", color_discrete_map=colores, text_auto=".1%")
-        fig3.update_layout(yaxis_tickformat=".0%", showlegend=False,
-    template="plotly_dark",
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)")
+        fig3.update_layout(yaxis_tickformat=".0%", showlegend=False)
         st.plotly_chart(fig3, use_container_width=True)
 
     with col2:
@@ -518,21 +246,15 @@ with tab1:
         fig4 = px.bar(pct_neg, x="Cripto", y="Pct_Neg",
                       title="Porcentaje días con retorno negativo",
                       color="Cripto", color_discrete_map=colores, text_auto=".1%")
-        fig4.update_layout(yaxis_tickformat=".0%", showlegend=False,
-    template="plotly_dark",
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)")
+        fig4.update_layout(yaxis_tickformat=".0%", showlegend=False)
         st.plotly_chart(fig4, use_container_width=True)
 
     fig5 = px.line(portafolio, x=portafolio.index, y=portafolio.columns.tolist(),
-                   title=f"Valor de ${monto_inicial:,} invertidos",
+                   title=f"💰 Valor de ${monto_inicial:,} invertidos",
                    labels={"value": "Valor (USD)", "variable": "Cripto"},
                    color_discrete_map=colores)
     fig5.add_hline(y=monto_inicial, line_dash="dash", line_color="gray")
-    fig5.update_layout(hovermode="x unified", height=400,
-    template="plotly_dark",
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)")
+    fig5.update_layout(hovermode="x unified", height=400)
     st.plotly_chart(fig5, use_container_width=True)
 
     fig6 = go.Figure()
@@ -544,11 +266,8 @@ with tab1:
             fill="tozeroy",
             fillcolor=fill_colors.get(cripto, "rgba(128,128,128,0.1)")
         ))
-    fig6.update_layout(title="Maximum Drawdown",
-                       yaxis_tickformat=".0%", hovermode="x unified", height=400,
-    template="plotly_dark",
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)")
+    fig6.update_layout(title="📉 Maximum Drawdown",
+                       yaxis_tickformat=".0%", hovermode="x unified", height=400)
     st.plotly_chart(fig6, use_container_width=True)
 
     st.subheader("📋 Resumen de métricas")
@@ -562,88 +281,52 @@ with tab1:
 
 # ── TAB 2 ─────────────────────────────────────────────────────
 with tab2:
-    st.markdown("<h2 style='color:#e2e8f0'>🎯 Estrategia Pulse Fund</h2>", unsafe_allow_html=True)
+    st.header("Estrategia Pulse Fund")
 
-    # Card de tesis
-    st.markdown("""
-    <div class="pulse-card-green">
-        <h3 style="color:#00FF88; margin:0 0 0.5rem 0;">📋 Nuestra Regla de Trading</h3>
-        <p style="color:#e2e8f0; margin:0; font-size:1rem; line-height:1.8;">
-            Cada mes identificamos la cripto con 
-            <span style="color:#00FF88; font-weight:700">mayor momentum en 60 días</span>. 
-            Solo invertimos si su volatilidad está 
-            <span style="color:#00FF88; font-weight:700">bajo el 6% diario</span>. 
-            Si ninguna pasa el filtro, 
-            <span style="color:#00FF88; font-weight:700">esperamos en efectivo</span>.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # Métricas principales
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("💓 Retorno Pulse Fund", f"{retorno_total_pulse:+.1%}")
-    c2.metric("📉 Max Drawdown",       f"{max_dd_pulse:.1%}")
-    c3.metric("⚡ Sharpe Ratio",       f"{sharpe_pulse:.2f}")
-    c4.metric("💵 Tiempo en efectivo", f"{pct_efectivo:.1%}")
+    c1.metric("Retorno Pulse Fund",  f"{retorno_total_pulse:+.1%}")
+    c2.metric("Max Drawdown",        f"{max_dd_pulse:.1%}")
+    c3.metric("Sharpe Ratio",        f"{sharpe_pulse:.2f}")
+    c4.metric("Tiempo en efectivo",  f"{pct_efectivo:.1%}")
 
     st.divider()
 
-    # Backtesting
-    st.markdown("<h3 style='color:#e2e8f0'>📈 Backtesting vs Benchmarks</h3>", unsafe_allow_html=True)
-
-    bt_df = pd.DataFrame({"💓 Pulse Fund": acum_pulse * monto_inicial})
+    bt_df = pd.DataFrame({"Pulse Fund": acum_pulse * monto_inicial})
     if acum_btc is not None:
         bt_df["🟠 Buy & Hold BTC"] = acum_btc * monto_inicial
     if acum_eth is not None:
         bt_df["🔵 Buy & Hold ETH"] = acum_eth * monto_inicial
     bt_df = bt_df.dropna()
 
-    fig7 = px.line(
-        bt_df, x=bt_df.index, y=bt_df.columns.tolist(),
-        title=f"Valor de ${monto_inicial:,} invertidos desde {fecha_inicio}",
-        labels={"value": "Valor (USD)", "variable": "Estrategia"},
-        color_discrete_map={
-            "💓 Pulse Fund":     "#00FF88",
-            "🟠 Buy & Hold BTC": "#F7931A",
-            "🔵 Buy & Hold ETH": "#627EEA"
-        }
-    )
-    fig7.add_hline(
-        y=monto_inicial,
-        line_dash="dash",
-        line_color="#64748b",
-        annotation_text=f"Capital inicial ${monto_inicial:,}",
-        annotation_font_color="#64748b"
-    )
-    fig7.update_layout(
-        hovermode="x unified",
-        height=450,
-        template="plotly_dark",
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        legend=dict(
-            bgcolor="rgba(30,41,59,0.8)",
-            bordercolor="#334155",
-            borderwidth=1
-        ),
-        yaxis=dict(tickprefix="$", tickformat=",.0f"),
-        font=dict(family="Inter", color="#e2e8f0")
-    )
+    fig7 = px.line(bt_df, x=bt_df.index, y=bt_df.columns.tolist(),
+                   title=f"Backtesting — ${monto_inicial:,} iniciales",
+                   labels={"value": "Valor (USD)", "variable": "Estrategia"},
+                   color_discrete_map={
+                       "💓 Pulse Fund": "#00FF88",
+                       "🟠 Buy & Hold BTC": "#F7931A",
+                       "🔵 Buy & Hold ETH": "#627EEA"
+                   })
+    fig7.add_hline(y=monto_inicial, line_dash="dash", line_color="gray")
+    fig7.update_layout(hovermode="x unified", height=450)
     st.plotly_chart(fig7, use_container_width=True)
-
-    # Tabla comparativa con estilo
-    st.markdown("<h3 style='color:#e2e8f0'>📋 Comparativa de estrategias</h3>", unsafe_allow_html=True)
 
     rows = [metricas_serie(retornos_pulse, "💓 Pulse Fund")]
     if "BTC" in retornos.columns:
         rows.append(metricas_serie(retornos["BTC"], "🟠 Buy & Hold BTC"))
     if "ETH" in retornos.columns:
         rows.append(metricas_serie(retornos["ETH"], "🔵 Buy & Hold ETH"))
+    st.dataframe(pd.DataFrame(rows).set_index("Estrategia"), use_container_width=True)
 
-    st.dataframe(
-        pd.DataFrame(rows).set_index("Estrategia"))
+    conteo = señal_diaria.value_counts()
+    fig8 = px.bar(x=conteo.index, y=conteo.values,
+                  title="📊 Días en cada posición",
+                  labels={"x": "Posición", "y": "Días"},
+                  color=conteo.index,
+                  color_discrete_map={"BTC": "#F7931A", "ETH": "#627EEA",
+                                      "SOL": "#9945FF", "EFECTIVO": "#444444"},
+                  text_auto=True)
+    fig8.update_layout(showlegend=False, height=350)
+    st.plotly_chart(fig8, use_container_width=True)
 
 # ── TAB 3 ─────────────────────────────────────────────────────
 with tab3:
@@ -691,10 +374,7 @@ with tab3:
     fig9.add_hline(y=-UMBRAL_CRASH, line_dash="dash", line_color="red",
                    annotation_text="Umbral crash -20%")
     fig9.update_layout(title="Drawdown histórico y zonas de crash",
-                       yaxis_tickformat=".0%", hovermode="x unified", height=430,
-    template="plotly_dark",
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)")
+                       yaxis_tickformat=".0%", hovermode="x unified", height=430)
     st.plotly_chart(fig9, use_container_width=True)
 
     st.subheader("🔗 Correlación entre criptomonedas")
@@ -702,12 +382,9 @@ with tab3:
     fig10 = px.imshow(corr, title="Correlación de retornos diarios",
                       color_continuous_scale="RdYlGn",
                       zmin=-1, zmax=1, text_auto=".2f")
-    fig10.update_layout(height=380,
-    template="plotly_dark",
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)")
+    fig10.update_layout(height=380)
     st.plotly_chart(fig10, use_container_width=True)
-    st.info("Alta correlación justifica la rotación, elegir la más fuerte cada mes "
+    st.info("Alta correlación justifica la rotación — elegir la más fuerte cada mes "
             "es más eficiente que diversificar entre activos que se mueven igual.")
 
 # ── TAB 4 ─────────────────────────────────────────────────────
@@ -733,7 +410,7 @@ with tab4:
         fig_c = go.Figure()
         fig_c.add_trace(go.Scatter(
             x=dd_pulse_serie.index, y=dd_pulse_serie,
-            name="Pulse Fund", line=dict(color="#00FF88", width=2),
+            name="💓 Pulse Fund", line=dict(color="#00FF88", width=2),
             fill="tozeroy", fillcolor="rgba(0,255,136,0.1)"
         ))
         if acum_btc is not None:
@@ -744,10 +421,7 @@ with tab4:
                 fill="tozeroy", fillcolor="rgba(247,147,26,0.1)"
             ))
         fig_c.update_layout(title="Comparación de pérdidas máximas",
-                            yaxis_tickformat=".0%", hovermode="x unified", height=400,
-    template="plotly_dark",
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)")
+                            yaxis_tickformat=".0%", hovermode="x unified", height=400)
         st.plotly_chart(fig_c, use_container_width=True)
 
     elif "Moderado" in perfil:
@@ -762,7 +436,7 @@ with tab4:
         fig_m = go.Figure()
         fig_m.add_trace(go.Scatter(
             x=acum_pulse.index, y=acum_pulse * monto_inicial,
-            name="Pulse Fund", line=dict(color="#00FF88", width=3)
+            name="💓 Pulse Fund", line=dict(color="#00FF88", width=3)
         ))
         if acum_btc is not None:
             fig_m.add_trace(go.Scatter(
@@ -772,14 +446,11 @@ with tab4:
         fig_m.add_hline(y=monto_inicial, line_dash="dot", line_color="gray")
         fig_m.update_layout(title=f"Crecimiento de ${monto_inicial:,}",
                             yaxis_tickprefix="$", yaxis_tickformat=",.0f",
-                            hovermode="x unified", height=400,
-    template="plotly_dark",
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)")
+                            hovermode="x unified", height=400)
         st.plotly_chart(fig_m, use_container_width=True)
 
     else:
-        st.subheader("Perfil Agresivo — Máximo momentum")
+        st.subheader("🚀 Perfil Agresivo — Máximo momentum")
         col1, col2 = st.columns(2)
         col1.metric("Retorno Pulse Fund", f"{retorno_total_pulse:+.1%}")
         col2.metric("Tiempo invertido",   f"{1-pct_efectivo:.1%}")
@@ -793,10 +464,7 @@ with tab4:
                        color_discrete_map={"BTC": "#F7931A", "ETH": "#627EEA",
                                            "SOL": "#9945FF", "EFECTIVO": "#444444"})
         fig_a.update_traces(textinfo="label+percent")
-        fig_a.update_layout(height=400,
-    template="plotly_dark",
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)")
+        fig_a.update_layout(height=400)
         st.plotly_chart(fig_a, use_container_width=True)
 
 # ── DISCLAIMER ───────────────────────────────────────────────
