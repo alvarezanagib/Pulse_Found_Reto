@@ -10,8 +10,94 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import date, timedelta
 
-st.set_page_config(page_title="Pulse Fund", page_icon="💓", layout="wide")
+# ==================== CONFIGURACIÓN VISUAL ====================
+st.set_page_config(
+    page_title="Pulse Fund", 
+    page_icon="💓", 
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# CSS Personalizado (el secreto para que se vea premium)
+st.markdown("""
+<style>
+    /* Fondo general con degradado sutil */
+    .stApp {
+        background: linear-gradient(180deg, #0f0f1e 0%, #1a1a2e 100%);
+    }
+    
+    /* Título principal más impactante */
+    .main .block-container {
+        padding-top: 2rem;
+    }
+    
+    h1 {
+        font-size: 3.2rem !important;
+        background: linear-gradient(90deg, #00ff88, #00ccff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+        margin-bottom: 0.2rem !important;
+    }
+    
+    .stCaption {
+        font-size: 1.1rem !important;
+        color: #a0a0c0 !important;
+    }
+    
+    /* Sidebar más moderno */
+    .css-1d391kg, .stSidebar {
+        background: rgba(15, 15, 30, 0.95) !important;
+        border-right: 1px solid #00ff88;
+    }
+    
+    /* Métricas más bonitas */
+    .stMetric {
+        background: rgba(255,255,255,0.03);
+        border-radius: 12px;
+        padding: 12px 0;
+        border: 1px solid rgba(0, 255, 136, 0.2);
+    }
+    
+    /* Tabs más elegantes */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 8px;
+        padding: 10px 20px;
+        background: rgba(255,255,255,0.05);
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(90deg, #00ff88, #00ccff) !important;
+        color: black !important;
+        font-weight: 600;
+    }
+    
+    /* Hover en gráficos */
+    .plotly-graph-div {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 255, 136, 0.1);
+    }
+</style>
+""", unsafe_allow_html=True)
+
 st.title("Pulse Fund")
+st.markdown("""
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+    <h1 style="margin:0;">💓 Pulse Fund</h1>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+**<span style="color:#00ff88">Invertimos cuando el mercado tiene pulso fuerte.</span>** 
+Cuando hay tormenta, esperamos.
+""", unsafe_allow_html=True)
+st.divider()
+
 st.caption("Invertimos cuando el mercado tiene pulso fuerte. Cuando hay tormenta, esperamos.")
 st.divider()
 
