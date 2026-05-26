@@ -404,7 +404,7 @@ with tab4:
         col2.metric("Max Drawdown BTC", f"{dd_btc_val:.1%}",
                     delta=f"{max_dd_pulse - dd_btc_val:+.1%} vs BTC",
                     delta_color="inverse")
-        st.info(f"💡 En el peor momento Pulse Fund perdió **{abs(max_dd_pulse):.1%}** "
+        st.info(f"En el peor momento Pulse Fund perdió **{abs(max_dd_pulse):.1%}** "
                 f"vs **{abs(dd_btc_val):.1%}** de BTC. El filtro de volatilidad protegió el capital.")
 
         fig_c = go.Figure()
