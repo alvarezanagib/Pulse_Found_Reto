@@ -17,73 +17,55 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# CSS Moderno y Profesional
+# CSS Profesional + Corrección de Gráficos
 st.markdown("""
 <style>
     .stApp {
         background: linear-gradient(180deg, #0a0a12 0%, #1a1a2e 100%);
     }
     
-    .main .block-container {
-        padding-top: 2.5rem;
-    }
-    
     h1 {
-        font-size: 3.4rem !important;
-        background: linear-gradient(90deg, #00ff88, #00ccff, #00ff88);
+        font-size: 3.6rem !important;
+        background: linear-gradient(90deg, #00ff88, #00ccff);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         font-weight: 800;
-        letter-spacing: -1px;
+        letter-spacing: -2px;
     }
     
     .stCaption {
-        font-size: 1.15rem !important;
-        color: #b0b0d0 !important;
-        font-weight: 400;
+        font-size: 1.25rem !important;
+        color: #a0b0d0 !important;
     }
     
-    /* Sidebar elegante */
     section[data-testid="stSidebar"] {
         background: rgba(15, 15, 35, 0.98) !important;
         border-right: 2px solid #00ff88;
     }
     
-    /* Métricas mejoradas */
     .stMetric {
-        background: rgba(255,255,255,0.05);
-        border-radius: 14px;
-        border: 1px solid rgba(0, 255, 136, 0.25);
-        padding: 10px 0;
+        background: rgba(0, 255, 136, 0.08);
+        border: 1px solid rgba(0, 255, 136, 0.3);
+        border-radius: 12px;
     }
     
-    /* Tabs más modernos */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 10px;
-    }
-    
+    .stTabs [data-baseweb="tab-list"] { gap: 10px; }
     .stTabs [data-baseweb="tab"] {
         border-radius: 10px;
         padding: 12px 24px;
-        background: rgba(255,255,255,0.06);
-        font-weight: 500;
+        background: rgba(255,255,255,0.07);
     }
-    
     .stTabs [aria-selected="true"] {
         background: linear-gradient(90deg, #00ff88, #00ccff) !important;
         color: black !important;
         font-weight: 700;
     }
     
-    /* Gráficos con estilo premium */
-    .plotly-graph-div {
+    .stPlotlyChart {
+        background: #1a1a2e;
         border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 8px 25px rgba(0, 255, 136, 0.12);
-    }
-    
-    hr {
-        border-color: rgba(0, 255, 136, 0.2);
+        padding: 10px;
+        box-shadow: 0 8px 30px rgba(0, 255, 136, 0.15);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -106,6 +88,7 @@ criptos_seleccionadas = st.sidebar.multiselect(
     default=list(criptos_disponibles.keys())
 )
 tickers = [criptos_disponibles[c] for c in criptos_seleccionadas]
+
 fecha_inicio = st.sidebar.date_input(
     "Fecha inicio:",
     value=date(2023, 1, 1),
@@ -117,6 +100,7 @@ monto_inicial = st.sidebar.number_input(
     "Monto hipotético (USD):",
     min_value=100, max_value=1_000_000, value=10_000, step=500
 )
+
 st.sidebar.divider()
 st.sidebar.subheader("Parámetros Pulse Fund")
 ventana_momentum = st.sidebar.slider("Ventana momentum (días):", 30, 90, 60)
@@ -148,7 +132,7 @@ def cargar_datos(tickers, inicio, fin):
             return pd.DataFrame()
         resultado = pd.DataFrame(frames)
         return resultado.dropna()
-    except Exception as e:
+    except:
         return pd.DataFrame()
 
 with st.spinner("📡 Descargando datos desde Yahoo Finance..."):
@@ -188,6 +172,7 @@ momentum = precios.pct_change(ventana_momentum)
 volatilidad_rod = retornos.rolling(ventana_volatilidad).std()
 dias_rebalanceo = precios.resample('MS').first().index
 señales_mensuales = {}
+
 for fecha_mes in dias_rebalanceo:
     dias_disp = precios.index[precios.index >= fecha_mes]
     if len(dias_disp) == 0:
@@ -214,7 +199,7 @@ for fecha_mes in dias_rebalanceo:
     else:
         señales_mensuales[fecha_real] = "EFECTIVO"
 
-# Expandir señales a días
+# Expandir señales
 señal_diaria = pd.Series("EFECTIVO", index=precios.index, dtype=str)
 fechas_ord = sorted(señales_mensuales.keys())
 for i, f_ini in enumerate(fechas_ord):
@@ -222,7 +207,7 @@ for i, f_ini in enumerate(fechas_ord):
     mask = (precios.index >= f_ini) & (precios.index < f_fin) if f_fin else (precios.index >= f_ini)
     señal_diaria[mask] = señales_mensuales[f_ini]
 
-# Retornos con costos
+# Retornos Pulse
 retornos_pulse = pd.Series(0.0, index=retornos.index)
 posicion_anterior = "EFECTIVO"
 for fecha in retornos.index:
@@ -234,10 +219,10 @@ for fecha in retornos.index:
     else:
         retornos_pulse[fecha] = retornos.loc[fecha, señal] - costo
 
-# Portafolios
 acum_pulse = (1 + retornos_pulse).cumprod()
 acum_btc = (1 + retornos["BTC"]).cumprod() if "BTC" in retornos.columns else None
 acum_eth = (1 + retornos["ETH"]).cumprod() if "ETH" in retornos.columns else None
+
 retorno_total_pulse = (1 + retornos_pulse).prod() - 1
 vol_pulse = retornos_pulse.std() * np.sqrt(252)
 dd_pulse_serie = calcular_drawdown(acum_pulse)
@@ -251,10 +236,8 @@ def metricas_serie(serie, nombre):
     acum = (1 + serie).cumprod()
     dd = calcular_drawdown(acum).min()
     sh = (serie.mean() * 252) / (serie.std() * np.sqrt(252))
-    return {"Estrategia": nombre,
-            "Retorno total": f"{ret:+.1%}",
-            "Volatilidad": f"{vol:.1%}",
-            "Max Drawdown": f"{dd:.1%}",
+    return {"Estrategia": nombre, "Retorno total": f"{ret:+.1%}",
+            "Volatilidad": f"{vol:.1%}", "Max Drawdown": f"{dd:.1%}",
             "Sharpe Ratio": f"{sh:.2f}"}
 
 # ── TABS ──────────────────────────────────────────────────────
@@ -273,20 +256,18 @@ with tab1:
         precio_actual = float(precios[cripto].iloc[-1])
         ret_period = float(precios[cripto].iloc[-1] / precios[cripto].iloc[0] - 1)
         cols[i].metric(cripto, f"${precio_actual:,.0f}", f"{ret_period:+.1%}")
-    
+
     st.divider()
-    
+
     fig1 = px.line(precios, x=precios.index, y=precios.columns.tolist(),
-                   title="Evolución de precios",
-                   labels={"value": "Precio (USD)", "variable": "Cripto"},
+                   title="Evolución de precios", template="plotly_dark",
                    color_discrete_map=colores)
     fig1.update_layout(hovermode="x unified", height=420)
     st.plotly_chart(fig1, use_container_width=True)
 
     precios_reb = (precios / precios.iloc[0]) * 100
     fig2 = px.line(precios_reb, x=precios_reb.index, y=precios_reb.columns.tolist(),
-                   title="Rendimiento comparado (base 100)",
-                   labels={"value": "Rendimiento", "variable": "Cripto"},
+                   title="Rendimiento comparado (base 100)", template="plotly_dark",
                    color_discrete_map=colores)
     fig2.add_hline(y=100, line_dash="dash", line_color="gray")
     fig2.update_layout(hovermode="x unified", height=420)
@@ -296,23 +277,20 @@ with tab1:
     with col1:
         vol_df = volatilidad.reset_index()
         vol_df.columns = ["Cripto", "Volatilidad"]
-        fig3 = px.bar(vol_df, x="Cripto", y="Volatilidad",
-                      title="Volatilidad anualizada",
-                      color="Cripto", color_discrete_map=colores, text_auto=".1%")
+        fig3 = px.bar(vol_df, x="Cripto", y="Volatilidad", template="plotly_dark",
+                      title="Volatilidad anualizada", color="Cripto", color_discrete_map=colores, text_auto=".1%")
         fig3.update_layout(yaxis_tickformat=".0%", showlegend=False)
         st.plotly_chart(fig3, use_container_width=True)
     with col2:
         pct_neg = (retornos < 0).mean().reset_index()
         pct_neg.columns = ["Cripto", "Pct_Neg"]
-        fig4 = px.bar(pct_neg, x="Cripto", y="Pct_Neg",
-                      title="Porcentaje días con retorno negativo",
-                      color="Cripto", color_discrete_map=colores, text_auto=".1%")
+        fig4 = px.bar(pct_neg, x="Cripto", y="Pct_Neg", template="plotly_dark",
+                      title="Porcentaje días con retorno negativo", color="Cripto", color_discrete_map=colores, text_auto=".1%")
         fig4.update_layout(yaxis_tickformat=".0%", showlegend=False)
         st.plotly_chart(fig4, use_container_width=True)
 
     fig5 = px.line(portafolio, x=portafolio.index, y=portafolio.columns.tolist(),
-                   title=f"💰 Valor de ${monto_inicial:,} invertidos",
-                   labels={"value": "Valor (USD)", "variable": "Cripto"},
+                   title=f"💰 Valor de ${monto_inicial:,} invertidos", template="plotly_dark",
                    color_discrete_map=colores)
     fig5.add_hline(y=monto_inicial, line_dash="dash", line_color="gray")
     fig5.update_layout(hovermode="x unified", height=420)
@@ -321,13 +299,10 @@ with tab1:
     fig6 = go.Figure()
     for cripto in precios.columns:
         dd = calcular_drawdown(precios[cripto])
-        fig6.add_trace(go.Scatter(
-            x=dd.index, y=dd, name=cripto,
+        fig6.add_trace(go.Scatter(x=dd.index, y=dd, name=cripto,
             line=dict(color=colores.get(cripto, "#888")),
-            fill="tozeroy",
-            fillcolor=fill_colors.get(cripto, "rgba(128,128,128,0.1)")
-        ))
-    fig6.update_layout(title="📉 Maximum Drawdown",
+            fill="tozeroy", fillcolor=fill_colors.get(cripto, "rgba(128,128,128,0.1)")))
+    fig6.update_layout(title="📉 Maximum Drawdown", template="plotly_dark",
                        yaxis_tickformat=".0%", hovermode="x unified", height=420)
     st.plotly_chart(fig6, use_container_width=True)
 
@@ -348,7 +323,6 @@ with tab2:
     c2.metric("Max Drawdown", f"{max_dd_pulse:.1%}")
     c3.metric("Sharpe Ratio", f"{sharpe_pulse:.2f}")
     c4.metric("Tiempo en efectivo", f"{pct_efectivo:.1%}")
-    
     st.divider()
 
     bt_df = pd.DataFrame({"Pulse Fund": acum_pulse * monto_inicial})
@@ -359,13 +333,8 @@ with tab2:
     bt_df = bt_df.dropna()
 
     fig7 = px.line(bt_df, x=bt_df.index, y=bt_df.columns.tolist(),
-                   title=f"Backtesting — ${monto_inicial:,} iniciales",
-                   labels={"value": "Valor (USD)", "variable": "Estrategia"},
-                   color_discrete_map={
-                       "Pulse Fund": "#00FF88",
-                       "🟠 Buy & Hold BTC": "#F7931A",
-                       "🔵 Buy & Hold ETH": "#627EEA"
-                   })
+                   title=f"Backtesting — ${monto_inicial:,} iniciales", template="plotly_dark",
+                   color_discrete_map={"Pulse Fund": "#00FF88", "🟠 Buy & Hold BTC": "#F7931A", "🔵 Buy & Hold ETH": "#627EEA"})
     fig7.add_hline(y=monto_inicial, line_dash="dash", line_color="gray")
     fig7.update_layout(hovermode="x unified", height=480)
     st.plotly_chart(fig7, use_container_width=True)
@@ -378,12 +347,9 @@ with tab2:
     st.dataframe(pd.DataFrame(rows).set_index("Estrategia"), use_container_width=True)
 
     conteo = señal_diaria.value_counts()
-    fig8 = px.bar(x=conteo.index, y=conteo.values,
-                  title="📊 Días en cada posición",
-                  labels={"x": "Posición", "y": "Días"},
-                  color=conteo.index,
-                  color_discrete_map={"BTC": "#F7931A", "ETH": "#627EEA",
-                                      "SOL": "#9945FF", "EFECTIVO": "#444444"},
+    fig8 = px.bar(x=conteo.index, y=conteo.values, template="plotly_dark",
+                  title="📊 Días en cada posición", color=conteo.index,
+                  color_discrete_map={"BTC": "#F7931A", "ETH": "#627EEA", "SOL": "#9945FF", "EFECTIVO": "#444444"},
                   text_auto=True)
     fig8.update_layout(showlegend=False, height=380)
     st.plotly_chart(fig8, use_container_width=True)
@@ -423,35 +389,27 @@ with tab3:
     fig9 = go.Figure()
     for cripto in precios.columns:
         dd = calcular_drawdown(precios[cripto])
-        fig9.add_trace(go.Scatter(
-            x=dd.index, y=dd, name=cripto,
+        fig9.add_trace(go.Scatter(x=dd.index, y=dd, name=cripto,
             line=dict(color=colores.get(cripto, "#888"), width=2),
-            fill="tozeroy",
-            fillcolor=fill_colors.get(cripto, "rgba(128,128,128,0.1)")
-        ))
-    fig9.add_hline(y=-UMBRAL_CRASH, line_dash="dash", line_color="red",
-                   annotation_text="Umbral crash -20%")
-    fig9.update_layout(title="Drawdown histórico y zonas de crash",
+            fill="tozeroy", fillcolor=fill_colors.get(cripto, "rgba(128,128,128,0.1)")))
+    fig9.add_hline(y=-UMBRAL_CRASH, line_dash="dash", line_color="red", annotation_text="Umbral crash -20%")
+    fig9.update_layout(title="Drawdown histórico y zonas de crash", template="plotly_dark",
                        yaxis_tickformat=".0%", hovermode="x unified", height=450)
     st.plotly_chart(fig9, use_container_width=True)
 
     st.subheader("🔗 Correlación entre criptomonedas")
     corr = retornos.corr()
-    fig10 = px.imshow(corr, title="Correlación de retornos diarios",
-                      color_continuous_scale="RdYlGn",
-                      zmin=-1, zmax=1, text_auto=".2f")
+    fig10 = px.imshow(corr, title="Correlación de retornos diarios", template="plotly_dark",
+                      color_continuous_scale="RdYlGn", zmin=-1, zmax=1, text_auto=".2f")
     fig10.update_layout(height=380)
     st.plotly_chart(fig10, use_container_width=True)
 
-    st.info("Alta correlación justifica la rotación — elegir la más fuerte cada mes "
-            "es más eficiente que diversificar entre activos que se mueven igual.")
+    st.info("Alta correlación justifica la rotación — elegir la más fuerte cada mes es más eficiente que diversificar.")
 
 # ── TAB 4 ─────────────────────────────────────────────────────
 with tab4:
     st.header("🎯 Recomendación al Inversor")
-    perfil = st.radio("Selecciona tu perfil:",
-                      ["🛡️ Conservador", "⚖️ Moderado", "🚀 Agresivo"],
-                      horizontal=True)
+    perfil = st.radio("Selecciona tu perfil:", ["🛡️ Conservador", "⚖️ Moderado", "🚀 Agresivo"], horizontal=True)
     st.divider()
 
     if "Conservador" in perfil:
@@ -459,11 +417,8 @@ with tab4:
         dd_btc_val = calcular_drawdown(acum_btc).min() if acum_btc is not None else 0
         col1, col2 = st.columns(2)
         col1.metric("Max Drawdown Pulse Fund", f"{max_dd_pulse:.1%}")
-        col2.metric("Max Drawdown BTC", f"{dd_btc_val:.1%}",
-                    delta=f"{max_dd_pulse - dd_btc_val:+.1%} vs BTC",
-                    delta_color="inverse")
-        st.info(f"En el peor momento Pulse Fund perdió **{abs(max_dd_pulse):.1%}** "
-                f"vs **{abs(dd_btc_val):.1%}** de BTC. El filtro de volatilidad protegió el capital.")
+        col2.metric("Max Drawdown BTC", f"{dd_btc_val:.1%}", 
+                    delta=f"{max_dd_pulse - dd_btc_val:+.1%} vs BTC", delta_color="inverse")
         
     elif "Moderado" in perfil:
         st.subheader("Perfil Moderado — Balance riesgo-retorno")
@@ -471,16 +426,12 @@ with tab4:
         col1.metric("Retorno Pulse Fund", f"{retorno_total_pulse:+.1%}")
         col2.metric("Sharpe Ratio", f"{sharpe_pulse:.2f}")
         col3.metric("Volatilidad", f"{vol_pulse:.1%}")
-        st.info(f"Pulse Fund creció **{retorno_total_pulse:+.1%}** desde {fecha_inicio} "
-                f"con Sharpe Ratio de **{sharpe_pulse:.2f}**.")
         
     else:
         st.subheader("🚀 Perfil Agresivo — Máximo momentum")
         col1, col2 = st.columns(2)
         col1.metric("Retorno Pulse Fund", f"{retorno_total_pulse:+.1%}")
         col2.metric("Tiempo invertido", f"{1-pct_efectivo:.1%}")
-        st.info("Pulse Fund rota cada mes hacia la cripto con mayor momentum. "
-                "Siempre en la más fuerte — no atado a una sola.")
 
 # ── DISCLAIMER ───────────────────────────────────────────────
 st.divider()
