@@ -420,7 +420,7 @@ with tab2:
         rows.append(metricas_serie(retornos["ETH"], "🔵 Buy & Hold ETH"))
 
     st.dataframe(
-        pd.DataFrame(rows).set_index("Estrategia"),
+        pd.DataFrame(rows).set_index("Estrategia"))
 
 # ── TAB 3 ─────────────────────────────────────────────────────
 with tab3:
