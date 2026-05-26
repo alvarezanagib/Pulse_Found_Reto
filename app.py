@@ -473,4 +473,4 @@ st.caption(
     "🤖 **Disclaimer IA:** Claude Sonnet (Anthropic) — asistencia en estructura del código, "
     "lógica de backtesting y visualizaciones | "
     "El equipo Pulse Fund definió la estrategia, validó los cálculos "
-    "y tomó todas las decisiones analíticas."
+    "y tomó todas las decisiones analíticas.")
