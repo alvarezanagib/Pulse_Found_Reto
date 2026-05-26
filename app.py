@@ -17,34 +17,231 @@ st.markdown("""<style>
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* ← NUEVO — fuerza fondo oscuro */
+/* ── Fuerza fondo oscuro ── */
 .stApp, .main, .block-container {
     background-color: #0f172a !important;
     background: linear-gradient(135deg, #0a0a0a 0%, #111827 50%, #0f172a 100%) !important;
 }
-
 section[data-testid="stMain"] {
     background: linear-gradient(135deg, #0a0a0a 0%, #111827 50%, #0f172a 100%) !important;
 }
-
 .stApp p, .stApp span, .stApp div {
     color: #e2e8f0;
 }
 
-/* ← TODO LO QUE YA TENÍAS SIGUE AQUÍ */
+/* ── Fuente general ── */
 html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
 }
 
+/* ── Fondo principal ── */
 .stApp {
     background: linear-gradient(135deg, #0a0a0a 0%, #111827 50%, #0f172a 100%);
     color: #f1f5f9;
 }
 
-/* ... resto del CSS ... */
+/* ── Sidebar ── */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #111827 0%, #1e293b 100%);
+    border-right: 1px solid #334155;
+}
+[data-testid="stSidebar"] * {
+    color: #e2e8f0 !important;
+}
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] div {
+    color: #e2e8f0 !important;
+}
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {
+    color: #00FF88 !important;
+}
+[data-testid="stSidebar"] input {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #334155 !important;
+    border-radius: 8px !important;
+}
+[data-testid="stNumberInput"] input {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #334155 !important;
+}
+[data-testid="stDateInput"] input {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #334155 !important;
+}
+
+/* ── Título principal ── */
+h1 {
+    background: linear-gradient(90deg, #00FF88, #00D4FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 3rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -1px;
+}
+
+/* ── Subtítulos ── */
+h2, h3 {
+    color: #e2e8f0 !important;
+    font-weight: 600 !important;
+}
+
+/* ── Tabs ── */
+[data-testid="stTabs"] button {
+    color: #94a3b8 !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border-radius: 8px 8px 0 0;
+}
+[data-testid="stTabs"] button[aria-selected="true"] {
+    color: #00FF88 !important;
+    border-bottom: 2px solid #00FF88 !important;
+    background: rgba(0, 255, 136, 0.05) !important;
+}
+
+/* ── Métricas ── */
+[data-testid="stMetric"] {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+[data-testid="stMetricLabel"] {
+    color: #94a3b8 !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+[data-testid="stMetricValue"] {
+    color: #f1f5f9 !important;
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+}
+[data-testid="stMetricDelta"] {
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+}
+
+/* ── Dataframes ── */
+[data-testid="stDataFrame"] {
+    border: 1px solid #334155 !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+}
+[data-testid="stDataFrame"] table {
+    background-color: #1e293b !important;
+}
+[data-testid="stDataFrame"] th {
+    background-color: #0f172a !important;
+    color: #94a3b8 !important;
+    font-size: 0.8rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    border-bottom: 1px solid #334155 !important;
+}
+[data-testid="stDataFrame"] td {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+    border-bottom: 1px solid #1e3a5f22 !important;
+}
+[data-testid="stDataFrame"] tr:hover td {
+    background-color: #263548 !important;
+}
+
+/* ── Botones radio ── */
+[data-testid="stRadio"] label {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    color: #e2e8f0 !important;
+    transition: all 0.2s;
+}
+[data-testid="stRadio"] label:hover {
+    border-color: #00FF88;
+    background: rgba(0,255,136,0.05);
+}
+
+/* ── Info boxes ── */
+[data-testid="stInfo"] {
+    background: rgba(0, 255, 136, 0.05) !important;
+    border: 1px solid rgba(0, 255, 136, 0.2) !important;
+    border-radius: 10px !important;
+    color: #e2e8f0 !important;
+}
+
+/* ── Divider ── */
+hr {
+    border-color: #334155 !important;
+}
+
+/* ── Sliders ── */
+[data-testid="stSlider"] > div > div > div {
+    background: #00FF88 !important;
+}
+
+/* ── Multiselect tags ── */
+[data-testid="stMultiSelect"] span {
+    background: rgba(0, 255, 136, 0.15) !important;
+    border: 1px solid rgba(0, 255, 136, 0.3) !important;
+    color: #00FF88 !important;
+    border-radius: 6px !important;
+}
+
+/* ── Success box ── */
+[data-testid="stSuccess"] {
+    background: rgba(0, 255, 136, 0.1) !important;
+    border: 1px solid rgba(0, 255, 136, 0.3) !important;
+    border-radius: 10px !important;
+}
+
+/* ── Caption ── */
+.stCaption {
+    color: #64748b !important;
+    font-size: 0.8rem !important;
+}
+
+/* ── Cards personalizadas ── */
+.pulse-card {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 0.5rem 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.pulse-card-green {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    border: 1px solid #10b981;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 0.5rem 0;
+}
+.pulse-highlight {
+    color: #00FF88;
+    font-weight: 700;
+}
+.pulse-tag {
+    display: inline-block;
+    background: rgba(0,255,136,0.15);
+    border: 1px solid rgba(0,255,136,0.3);
+    color: #00FF88;
+    border-radius: 20px;
+    padding: 0.2rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 0.2rem;
+}
 
 </style>""", unsafe_allow_html=True)
-
 # ── HEADER VISUAL ────────────────────────────────────────────
 st.markdown("""
 <div style="
