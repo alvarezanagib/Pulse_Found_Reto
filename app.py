@@ -14,7 +14,35 @@ st.set_page_config(page_title="Pulse Fund", page_icon="📊", layout="wide")
 
 # ── CSS ──────────────────────────────────────────────────────
 st.markdown("""<style>
-... (el CSS que ya tienes)
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ← NUEVO — fuerza fondo oscuro */
+.stApp, .main, .block-container {
+    background-color: #0f172a !important;
+    background: linear-gradient(135deg, #0a0a0a 0%, #111827 50%, #0f172a 100%) !important;
+}
+
+section[data-testid="stMain"] {
+    background: linear-gradient(135deg, #0a0a0a 0%, #111827 50%, #0f172a 100%) !important;
+}
+
+.stApp p, .stApp span, .stApp div {
+    color: #e2e8f0;
+}
+
+/* ← TODO LO QUE YA TENÍAS SIGUE AQUÍ */
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
+}
+
+.stApp {
+    background: linear-gradient(135deg, #0a0a0a 0%, #111827 50%, #0f172a 100%);
+    color: #f1f5f9;
+}
+
+/* ... resto del CSS ... */
+
 </style>""", unsafe_allow_html=True)
 
 # ── HEADER VISUAL ────────────────────────────────────────────
@@ -27,18 +55,16 @@ st.markdown("""
     margin-bottom: 1.5rem;
     box-shadow: 0 8px 32px rgba(0,255,136,0.1);
 ">
-    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:0.5rem;">
-        <span style="font-size:3rem;">📊</span>
-        <span style="
-            background: linear-gradient(90deg, #00FF88, #00D4FF);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 3rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-        ">Pulse Fund</span>
-    </div>
-    <p style="color:#94a3b8; font-size:1.1rem; margin:0.5rem 0 1rem 0;">
+    <p style="
+        background: linear-gradient(90deg, #00FF88, #00D4FF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 3rem;
+        font-weight: 800;
+        margin: 0 0 0.5rem 0;
+        letter-spacing: -1px;
+    ">💓 Pulse Fund</p>
+    <p style="color:#94a3b8; font-size:1.1rem; margin:0 0 1rem 0;">
         Invertimos cuando el mercado tiene pulso fuerte. 
         <span style="color:#00FF88; font-weight:600;">Cuando hay tormenta, esperamos.</span>
     </p>
