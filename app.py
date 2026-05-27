@@ -16,112 +16,42 @@ st.caption("Invertimos cuando el mercado tiene pulso fuerte. Cuando hay tormenta
 st.divider()
 
 # ── HEADER con identidad visual ──────────────────────────────
-
 st.markdown("""
 <div style="
-    background: linear-gradient(135deg, #f8fafc 0%, #eef4ff 100%);
-    border: 1px solid #dbe4f0;
-    border-radius: 22px;
+    background: linear-gradient( 135deg,
+        081120 0%,
+        0f172a 55%,
+        111827 100%);
+    border: 1px solid rgba(59,130,246,0.15);
+    border-radius: 24px;
     padding: 2rem 2.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 4px 18px rgba(15,23,42,0.05);
+    box-shadow: 0 8px 32px rgba(0,255,136,0.1);
 ">
-
-    <div style="
-        display:flex;
-        align-items:center;
-        gap:1rem;
-        margin-bottom:0.7rem;
-    ">
-
-        <span style="
-            font-size:3rem;
-        ">
-            💓
-        </span>
-
+    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:0.5rem;">
+        <span style="font-size:3rem;">💓</span>
         <h1 style="
-            background: linear-gradient(90deg, #2563eb, #0ea5e9);
+            background: linear-gradient(90deg,
+        38bdf8 0%,
+        22c55e 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size:3rem;
-            font-weight:800;
-            margin:0;
-            letter-spacing:-1px;
-        ">
-            Pulse Fund
-        </h1>
-
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -1px;
+        ">Pulse Fund</h1>
     </div>
-
-    <p style="
-        color:#475569;
-        font-size:1.08rem;
-        line-height:1.7;
-        margin:0;
-    ">
-        Invertimos cuando el mercado tiene pulso fuerte.
-        <span style="
-            color:#2563eb;
-            font-weight:600;
-        ">
-            Cuando hay tormenta, esperamos.
-        </span>
+    <p style="color:#94a3b8; font-size:1.1rem; margin:0; font-weight:400;">
+        Invertimos cuando el mercado tiene pulso fuerte. 
+        <span style="color:#00FF88; font-weight:600;">Cuando hay tormenta, esperamos.</span>
     </p>
-
-    <div style="
-        margin-top:1.2rem;
-        display:flex;
-        flex-wrap:wrap;
-        gap:0.7rem;
-    ">
-
-        <span style="
-            background:#dbeafe;
-            color:#1d4ed8;
-            padding:0.45rem 0.9rem;
-            border-radius:999px;
-            font-size:0.9rem;
-            font-weight:500;
-        ">
-            💹 Momentum
-        </span>
-
-        <span style="
-            background:#ecfeff;
-            color:#0891b2;
-            padding:0.45rem 0.9rem;
-            border-radius:999px;
-            font-size:0.9rem;
-            font-weight:500;
-        ">
-            🛡️ Filtro Volatilidad
-        </span>
-
-        <span style="
-            background:#f1f5f9;
-            color:#334155;
-            padding:0.45rem 0.9rem;
-            border-radius:999px;
-            font-size:0.9rem;
-            font-weight:500;
-        ">
-            🔄 Rebalanceo Mensual
-        </span>
-
-        <span style="
-            background:#f0fdf4;
-            color:#15803d;
-            padding:0.45rem 0.9rem;
-            border-radius:999px;
-            font-size:0.9rem;
-            font-weight:500;
-        ">
-            📊 BTC · ETH · SOL
-        </span>
-
+    <div style="margin-top:1rem;">
+        <span class="pulse-tag">💹 Momentum</span>
+        <span class="pulse-tag">🛡️ Filtro Volatilidad</span>
+        <span class="pulse-tag">🔄 Rebalanceo Mensual</span>
+        <span class="pulse-tag">📊 BTC · ETH · SOL</span>
     </div>
-
 </div>
 """, unsafe_allow_html=True)
 
