@@ -78,7 +78,7 @@ def cargar_datos(tickers, inicio, fin):
     except Exception as e:
         return pd.DataFrame()
 
-with st.spinner("📡 Descargando datos desde Yahoo Finance..."):
+with st.spinner("Descargando datos desde Yahoo Finance..."):
     precios = cargar_datos(tickers, fecha_inicio, fecha_fin)
 
 if precios is None or precios.empty:
@@ -250,7 +250,7 @@ with tab1:
         st.plotly_chart(fig4, use_container_width=True)
 
     fig5 = px.line(portafolio, x=portafolio.index, y=portafolio.columns.tolist(),
-                   title=f"💰 Valor de ${monto_inicial:,} invertidos",
+                   title=f"Valor de ${monto_inicial:,} invertidos",
                    labels={"value": "Valor (USD)", "variable": "Cripto"},
                    color_discrete_map=colores)
     fig5.add_hline(y=monto_inicial, line_dash="dash", line_color="gray")
@@ -266,7 +266,7 @@ with tab1:
             fill="tozeroy",
             fillcolor=fill_colors.get(cripto, "rgba(128,128,128,0.1)")
         ))
-    fig6.update_layout(title="📉 Maximum Drawdown",
+    fig6.update_layout(title="Maximum Drawdown",
                        yaxis_tickformat=".0%", hovermode="x unified", height=400)
     st.plotly_chart(fig6, use_container_width=True)
 
@@ -319,7 +319,7 @@ with tab2:
 
     conteo = señal_diaria.value_counts()
     fig8 = px.bar(x=conteo.index, y=conteo.values,
-                  title="📊 Días en cada posición",
+                  title="Días en cada posición",
                   labels={"x": "Posición", "y": "Días"},
                   color=conteo.index,
                   color_discrete_map={"BTC": "#F7931A", "ETH": "#627EEA",
@@ -330,7 +330,7 @@ with tab2:
 
 # ── TAB 3 ─────────────────────────────────────────────────────
 with tab3:
-    st.header("📉 Caídas Extremas y Recuperación Post-Crash")
+    st.header("Caídas Extremas y Recuperación Post-Crash")
     st.caption("Análisis específico del ecosistema cripto — mercado 24/7 con crashes frecuentes")
 
     UMBRAL_CRASH = 0.20
