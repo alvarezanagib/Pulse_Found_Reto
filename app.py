@@ -16,14 +16,15 @@ st.caption("Invertimos cuando el mercado tiene pulso fuerte. Cuando hay tormenta
 st.divider()
 
 # ── HEADER con identidad visual ──────────────────────────────
+
 st.markdown("""
 <div style="
-    background: linear-gradient(135deg, #f8fafc 0%, #eef6ff 100%);
-    border: 1px solid rgba(148,163,184,0.18);
+    background: linear-gradient(135deg, #f8fafc 0%, #eef4ff 100%);
+    border: 1px solid #dbe4f0;
     border-radius: 22px;
     padding: 2rem 2.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 6px 24px rgba(15,23,42,0.06);
+    box-shadow: 0 4px 18px rgba(15,23,42,0.05);
 ">
 
     <div style="
@@ -32,32 +33,32 @@ st.markdown("""
         gap:1rem;
         margin-bottom:0.7rem;
     ">
+
         <span style="
             font-size:3rem;
-            filter: drop-shadow(0 2px 8px rgba(59,130,246,0.12));
         ">
             💓
         </span>
 
         <h1 style="
-            background: linear-gradient(90deg, #2563eb, #06b6d4);
+            background: linear-gradient(90deg, #2563eb, #0ea5e9);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 3rem;
-            font-weight: 800;
-            margin: 0;
-            letter-spacing: -1px;
+            font-size:3rem;
+            font-weight:800;
+            margin:0;
+            letter-spacing:-1px;
         ">
             Pulse Fund
         </h1>
+
     </div>
 
     <p style="
         color:#475569;
         font-size:1.08rem;
-        margin:0;
         line-height:1.7;
-        font-weight:400;
+        margin:0;
     ">
         Invertimos cuando el mercado tiene pulso fuerte.
         <span style="
