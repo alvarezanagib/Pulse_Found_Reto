@@ -10,11 +10,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import date, timedelta
 
-st.set_page_config(page_title="Pulse Fund", page_icon="💓", layout="wide")
-st.title("Pulse Fund")
-st.caption("Invertimos cuando el mercado tiene pulso fuerte. Cuando hay tormenta, esperamos.")
-st.divider()
-
 # ── HEADER ──────────────────────────────────────────────────
 st.markdown("""
 <div style="
