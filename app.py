@@ -10,7 +10,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import date, timedelta
 
-# ── HEADER con identidad visual ──────────────────────────────
 st.markdown("""
 <div style="
     background: linear-gradient(135deg, #f8fafc 0%, #eef4ff 60%);
@@ -21,7 +20,7 @@ st.markdown("""
     box-shadow: 0 8px 32px rgba(37,99,235,0.08);
 ">
     <div style="display:flex; align-items:center; gap:1rem; margin-bottom:0.5rem;">
-        <span style="font-size:3rem;">💹</span>
+        <span style="font-size:3rem;">💓</span>
         <h1 style="
             background: linear-gradient(90deg, #2563eb, #0ea5e9);
             -webkit-background-clip: text;
