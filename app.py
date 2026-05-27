@@ -15,6 +15,8 @@ st.title("Pulse Fund")
 st.caption("Invertimos cuando el mercado tiene pulso fuerte. Cuando hay tormenta, esperamos.")
 st.divider()
 
+
+# ── HEADER con identidad visual ──────────────────────────────
 st.markdown("""
 <div style="
     background: linear-gradient(135deg, #f8fafc 0%, #eef4ff 60%);
