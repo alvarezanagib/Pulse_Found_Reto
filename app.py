@@ -10,6 +10,25 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import date, timedelta
 
+# CSS para corregir alineación y centrar correctamente───────────────────────────────────────
+st.markdown("""
+<style>
+    .main .block-container {
+        max-width: 1350px !important;
+        margin: 0 auto;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+    
+    /* Header más centrado y responsive */
+    .custom-header {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # ── HEADER Pulse Fund ───────────────────────────────────────
 st.markdown("""
 <div style="
