@@ -348,7 +348,7 @@ with tab1:
                        yaxis_tickformat=".0%", hovermode="x unified", height=400)
     st.plotly_chart(fig6, use_container_width=True)
 
-    st.subheader("📋 Resumen de métricas")
+    st.subheader(" Resumen de métricas")
     resumen = pd.DataFrame({
         "Retorno total":     (precios.iloc[-1]/precios.iloc[0]-1).map("{:+.1%}".format),
         "Volatilidad anual": volatilidad.map("{:.1%}".format),
@@ -359,43 +359,46 @@ with tab1:
 
 # ── TAB 2 ─────────────────────────────────────────────────────
 with tab2:
-    st.header("Backtesting — Pulse Fund")
+    st.header(" Backtesting — Pulse Fund")
 
     # ==================== RESULTADO PRINCIPAL ====================
     st.subheader("¿Qué habría pasado si invertiste en Pulse Fund?")
 
-    # Cálculos
     valor_final = float(acum_pulse.iloc[-1] * monto_inicial)
     ganancia = valor_final - monto_inicial
     retorno_pct = (valor_final / monto_inicial) - 1
 
-    # Tarjeta principal
+    # Tarjeta con colores inspirados en el logo (Púrpura/Magenta)
     st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #1e3a8a, #312e81); 
-                padding: 2rem; border-radius: 20px; text-align: center; 
-                border: 2px solid #6366f1; margin: 1.5rem 0;">
-        <p style="color: #93c5fd; margin-bottom: 0.5rem; font-size: 1.1rem;">
+    <div style="background: linear-gradient(135deg, #4c1d95, #7e22ce, #c026d3); 
+                padding: 2.5rem; border-radius: 20px; text-align: center; 
+                border: 3px solid #e879f9; margin: 1.5rem 0; box-shadow: 0 10px 40px rgba(192, 38, 211, 0.4);">
+        
+        <p style="color: #f3e8ff; margin-bottom: 0.5rem; font-size: 1.15rem; font-weight: 500;">
             Inversión inicial • {fecha_inicio}
         </p>
-        <h1 style="color: white; margin: 0.3rem 0; font-size: 2.8rem;">
+        <h1 style="color: white; margin: 0.4rem 0 1.2rem 0; font-size: 3rem;">
             ${monto_inicial:,.0f}
         </h1>
-        <hr style="border-color: rgba(255,255,255,0.2); margin: 1.2rem 0;">
-        <p style="color: #86efac; font-size: 3rem; font-weight: 700; margin: 0;">
-            ${valor_final:,.0f}
-        </p>
-        <p style="color: #86efac; font-size: 1.6rem; font-weight: 600;">
-            +${ganancia:,.0f} ({retorno_pct:+.1%})
-        </p>
-        <p style="color: #a5b4fc; margin-top: 1rem; font-size: 1.1rem;">
-            Pulse Fund Strategy
+        
+        <div style="background: rgba(255,255,255,0.12); border-radius: 16px; padding: 1.8rem; margin: 1rem auto; max-width: 420px;">
+            <p style="color: #f0abfc; font-size: 3.4rem; font-weight: 700; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+                ${valor_final:,.0f}
+            </p>
+            <p style="color: #f0abfc; font-size: 1.7rem; font-weight: 600; margin: 0.4rem 0 0 0;">
+                +${ganancia:,.0f} ({retorno_pct:+.1%})
+            </p>
+        </div>
+        
+        <p style="color: #e0bbff; margin-top: 1.8rem; font-size: 1.2rem; font-weight: 500;">
+            💓 Pulse Fund Strategy
         </p>
     </div>
     """, unsafe_allow_html=True)
 
     st.divider()
 
-    # Métricas adicionales
+    # Métricas
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Retorno Total", f"{retorno_total_pulse:+.1%}")
     col2.metric("Valor Final", f"${valor_final:,.0f}")
@@ -404,7 +407,7 @@ with tab2:
 
     st.divider()
 
-    # Gráfico comparativo
+    # Gráfico
     bt_df = pd.DataFrame({"💓 Pulse Fund": acum_pulse * monto_inicial})
     if acum_btc is not None:
         bt_df["🟠 Buy & Hold BTC"] = acum_btc * monto_inicial
@@ -414,14 +417,13 @@ with tab2:
     fig = px.line(bt_df, x=bt_df.index, y=bt_df.columns,
                   title=f"Evolución de ${monto_inicial:,.0f} invertidos",
                   color_discrete_map={
-                      "💓 Pulse Fund": "#00FF88",
+                      "💓 Pulse Fund": "#c026d3",   # Magenta fuerte
                       "🟠 Buy & Hold BTC": "#F7931A",
                       "🔵 Buy & Hold ETH": "#627EEA"
                   })
     fig.add_hline(y=monto_inicial, line_dash="dash", line_color="gray")
     fig.update_layout(hovermode="x unified", height=480)
     st.plotly_chart(fig, use_container_width=True)
-    
 # ── TAB 3 ─────────────────────────────────────────────────────
 with tab3:
     st.header("Caídas Extremas y Recuperación Post-Crash")
