@@ -46,58 +46,28 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── NV HEADER──────────────────────────────────────────────────
-import base64
 
-def cargar_logo(path):
-    try:
-        with open(path, "rb") as f:
-            return base64.b64encode(f.read()).decode()
-    except:
-        return None
-
-logo_b64 = cargar_logo("logo.png")
-logo_html = f'<img src="data:image/png;base64,{logo_b64}" style="width:90px; height:90px; object-fit:contain; border-radius:12px;">' if logo_b64 else ""
-
-st.markdown(f"""
-<div style="
-    background: linear-gradient(135deg, #f8fafc 0%, #eef4ff 60%);
-    border: 1px solid rgba(37,99,235,0.15);
-    border-radius: 20px;
-    padding: 2rem 2.5rem;
-    margin: -1rem -1rem 1.5rem -1rem;
-    box-shadow: 0 8px 32px rgba(37,99,235,0.08);
-    width: 100%;
-    box-sizing: border-box;
-">
-    <div style="display:flex; align-items:center; gap:1.5rem; margin-bottom:0.8rem;">
-        {logo_html}
-        <div>
-            <p style="
-                background: linear-gradient(90deg, #2563eb, #0ea5e9);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                font-size: 2.8rem;
-                font-weight: 800;
-                margin: 0;
-                letter-spacing: -1px;
-                line-height: 1.1;
-            ">Pulse Fund</p>
-            <p style="color:#475569; font-size:1rem; margin:0.3rem 0 0 0;">
-                Invertimos cuando el mercado tiene pulso fuerte.
-                <span style="color:#2563eb; font-weight:600;">Cuando hay tormenta, esperamos.</span>
-            </p>
-        </div>
-    </div>
-    <div style="margin-top:1rem; border-top:1px solid rgba(37,99,235,0.1); padding-top:1rem;">
-        <span class="pulse-tag">💹 Momentum</span>
-        <span class="pulse-tag">🛡️ Filtro Volatilidad</span>
-        <span class="pulse-tag">🔄 Rebalanceo Mensual</span>
-        <span class="pulse-tag">📊 BTC · ETH · SOL</span>
-    </div>
-</div>
-""", unsafe_allow_html=True)
 # ── SIDEBAR ──────────────────────────────────────────────────
+with st.sidebar:
+    # ── LOGO ─────────────────────────────────
+    def cargar_logo(path):
+        try:
+            with open(path, "rb") as f:
+                return base64.b64encode(f.read()).decode()
+        except:
+            return None
+
+    logo_b64 = cargar_logo("logo.png")
+
+    if logo_b64:
+        st.markdown(f"""
+        <div style="text-align:center; padding:1rem 0 0.5rem 0;">
+            <img src="data:image/png;base64,{logo_b64}" 
+                 style="width:150px; border-radius:16px;">
+        </div>
+        """, unsafe_allow_html=True)
+# ── SIDEBAR ──────────────────────────────────────────────────
+
 st.sidebar.header("⚙️ Parámetros")
 
 criptos_disponibles = {
