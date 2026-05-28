@@ -83,6 +83,58 @@ umbral_volatilidad  = st.sidebar.slider("Umbral volatilidad (% diario):", 1.0, 1
 ventana_volatilidad = 21
 costo_transaccion   = 0.001
 
+import base64
+
+# Cargar logo
+def cargar_logo(path):
+    try:
+        with open(path, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+    except:
+        return None
+
+logo_b64 = cargar_logo("logo.png")
+
+if logo_b64:
+    logo_html = f'<img src="data:image/png;base64,{logo_b64}" style="width:80px; height:80px; object-fit:contain; border-radius:12px;">'
+else:
+    logo_html = '<span style="font-size:3rem;">💓</span>'
+
+st.markdown(f"""
+<div style="
+    background: linear-gradient(135deg, #f8fafc 0%, #eef4ff 60%);
+    border: 1px solid rgba(37,99,235,0.15);
+    border-radius: 20px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 32px rgba(37,99,235,0.08);
+">
+    <div style="display:flex; align-items:center; gap:1.5rem; margin-bottom:0.8rem; flex-wrap:wrap;">
+        {logo_html}
+        <p style="
+            background: linear-gradient(90deg, #2563eb, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        ">Pulse Fund</p>
+    </div>
+    <p style="color:#475569; font-size:1.1rem; margin:0 0 1rem 0;">
+        Invertimos cuando el mercado tiene pulso fuerte.
+        <span style="color:#2563eb; font-weight:600;"> Cuando hay tormenta, esperamos.</span>
+    </p>
+    <div>
+        <span class="pulse-tag">💹 Momentum</span>
+        <span class="pulse-tag">🛡️ Filtro Volatilidad</span>
+        <span class="pulse-tag">🔄 Rebalanceo Mensual</span>
+        <span class="pulse-tag">📊 BTC · ETH · SOL</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
 # ── VALIDACIÓN ───────────────────────────────────────────────
 if len(tickers) == 0:
     st.warning(" Selecciona al menos una criptomoneda.")
