@@ -369,11 +369,15 @@ with tab2:
     ganancia = valor_final - monto_inicial
     retorno_pct = (valor_final / monto_inicial) - 1
 
-    # Tarjeta con colores mejorados según tu logo
+     # ==================== TARJETA PRINCIPAL ====================
+    valor_final = float(acum_pulse.iloc[-1] * monto_inicial)
+    ganancia = valor_final - monto_inicial
+    retorno_pct = (valor_final / monto_inicial) - 1
+
     st.markdown(f"""
     <div style="background: linear-gradient(135deg, #6b21a8, #9333ea, #c026d3); 
                 padding: 2.5rem; border-radius: 20px; text-align: center; 
-                border: 3px solid #f472b6; margin: 1.5rem 0; box-shadow: 0 10px 40px rgba(192, 38, 211, 0.35);">
+                border: 3px solid #f472b6; margin: 1.5rem 0; box-shadow: 0 10px 40px rgba(192, 38, 211, 0.4);">
         
         <p style="color: #f3e8ff; margin-bottom: 0.5rem; font-size: 1.15rem; font-weight: 500;">
             Inversión inicial • {fecha_inicio}
@@ -392,11 +396,11 @@ with tab2:
         </div>
         
         <p style="color: #e9d5ff; margin-top: 1.8rem; font-size: 1.2rem; font-weight: 500;">
-             Pulse Fund Strategy
+            💓 Pulse Fund Strategy
         </p>
     </div>
     """, unsafe_allow_html=True)
-
+    
     # Métricas adicionales
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Retorno Total", f"{retorno_total_pulse:+.1%}")
