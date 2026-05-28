@@ -37,10 +37,10 @@ st.markdown("""
         <span style="color:#2563eb; font-weight:600;">Cuando hay tormenta, esperamos.</span>
     </p>
     <div style="margin-top:1rem;">
-        <span class="pulse-tag">💹 Momentum</span>
-        <span class="pulse-tag">🛡️ Filtro Volatilidad</span>
-        <span class="pulse-tag">🔄 Rebalanceo Mensual</span>
-        <span class="pulse-tag">📊 BTC · ETH · SOL</span>
+        <span class="pulse-tag"> Momentum</span>
+        <span class="pulse-tag"> Filtro Volatilidad</span>
+        <span class="pulse-tag"> Rebalanceo Mensual</span>
+        <span class="pulse-tag"> BTC · ETH · SOL</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
