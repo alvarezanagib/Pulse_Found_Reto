@@ -85,7 +85,7 @@ costo_transaccion   = 0.001
 
 # ── VALIDACIÓN ───────────────────────────────────────────────
 if len(tickers) == 0:
-    st.warning("⚠️ Selecciona al menos una criptomoneda.")
+    st.warning(" Selecciona al menos una criptomoneda.")
     st.stop()
 
 # ── CARGA DE DATOS ───────────────────────────────────────────
@@ -334,7 +334,7 @@ with tab2:
                    title=f"Backtesting — ${monto_inicial:,} iniciales",
                    labels={"value": "Valor (USD)", "variable": "Estrategia"},
                    color_discrete_map={
-                       "💓 Pulse Fund": "#00FF88",
+                       " Pulse Fund": "#00FF88",
                        "🟠 Buy & Hold BTC": "#F7931A",
                        "🔵 Buy & Hold ETH": "#627EEA"
                    })
@@ -342,7 +342,7 @@ with tab2:
     fig7.update_layout(hovermode="x unified", height=450)
     st.plotly_chart(fig7, use_container_width=True)
 
-    rows = [metricas_serie(retornos_pulse, "💓 Pulse Fund")]
+    rows = [metricas_serie(retornos_pulse, " Pulse Fund")]
     if "BTC" in retornos.columns:
         rows.append(metricas_serie(retornos["BTC"], "🟠 Buy & Hold BTC"))
     if "ETH" in retornos.columns:
@@ -424,7 +424,7 @@ with tab4:
     st.header("Recomendación al Inversor")
 
     perfil = st.radio("Selecciona tu perfil:",
-                      ["🛡️ Conservador", "⚖️ Moderado", "🚀 Agresivo"],
+                      [" Conservador", " Moderado", " Agresivo"],
                       horizontal=True)
     st.divider()
 
@@ -442,7 +442,7 @@ with tab4:
         fig_c = go.Figure()
         fig_c.add_trace(go.Scatter(
             x=dd_pulse_serie.index, y=dd_pulse_serie,
-            name="💓 Pulse Fund", line=dict(color="#00FF88", width=2),
+            name=" Pulse Fund", line=dict(color="#00FF88", width=2),
             fill="tozeroy", fillcolor="rgba(0,255,136,0.1)"
         ))
         if acum_btc is not None:
