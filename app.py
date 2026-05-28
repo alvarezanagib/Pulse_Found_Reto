@@ -234,40 +234,7 @@ st.markdown("""
     border-radius: 14px !important;
     box-shadow: 0 0 12px rgba(123,97,255,0.08);
 }
-/* TEXTO BLANCO GENERAL */
-html, body, p, span, label, div {
-    color: white !important;
-}
 
-/* SIDEBAR */
-section[data-testid="stSidebar"] * {
-    color: white !important;
-}
-
-/* INPUTS */
-input, textarea {
-    color: white !important;
-}
-
-/* SELECTBOX */
-div[data-baseweb="select"] * {
-    color: white !important;
-}
-
-/* RADIO BUTTONS */
-.stRadio label {
-    color: white !important;
-}
-
-/* SLIDERS */
-.stSlider label {
-    color: white !important;
-}
-
-/* CAPTIONS */
-.stCaption {
-    color: white !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -293,7 +260,7 @@ st.markdown("""
             letter-spacing: -1px;
         ">Pulse Fund</h1>
     </div>
-  <p style="color:white; font-size:1.1rem; margin:0; font-weight:400;">
+    <p style="color:#4b5563; font-size:1.1rem; margin:0; font-weight:400;">
         Invertimos cuando el mercado tiene pulso fuerte.
         <span style="color:#db2777; font-weight:600;">Cuando hay tormenta, esperamos.</span>
     </p>
