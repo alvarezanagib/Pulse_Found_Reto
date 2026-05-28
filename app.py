@@ -359,40 +359,48 @@ with tab1:
 
 # ── TAB 2 ─────────────────────────────────────────────────────
 with tab2:
-    st.header(" Backtesting — Pulse Fund")
+    st.header("Backtesting — Pulse Fund")
 
-    # ==================== TABLERO PRINCIPAL ====================
+    # ==================== TABLERO DESTACADO ====================
     st.subheader("¿Qué habría pasado si invertiste en 2023?")
-    
-    col_a, col_b, col_c = st.columns([1, 2, 1])
-    
-    with col_b:
-        valor_final = acum_pulse.iloc[-1] * monto_inicial
-        ganancia = valor_final - monto_inicial
-        retorno_pct = (valor_final / monto_inicial) - 1
+
+    valor_final = float(acum_pulse.iloc[-1] * monto_inicial)
+    ganancia = valor_final - monto_inicial
+    retorno_pct = (valor_final / monto_inicial) - 1
+
+    # Tarjeta
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #1e40af, #312e81); 
+                padding: 2.5rem; border-radius: 20px; text-align: center; 
+                border: 3px solid #6366f1; margin: 1.5rem 0; box-shadow: 0 10px 30px rgba(99,102,241,0.3);">
         
-        st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #1e3a8a, #312e81); 
-                    padding: 2rem; border-radius: 16px; text-align: center; 
-                    border: 2px solid #6366f1; margin: 1rem 0;">
-            <p style="color:#93c5fd; margin:0; font-size:1.1rem;">Inversión inicial ({fecha_inicio})</p>
-            <h2 style="color:white; margin:0.2rem 0;">${monto_inicial:,.0f}</h2>
-            
-            <p style="color:#86efac; font-size:2.8rem; font-weight:700; margin:1rem 0;">
+        <p style="color:#93c5fd; margin:0; font-size:1.1rem; font-weight:500;">
+            Inversión inicial ({fecha_inicio})
+        </p>
+        <h2 style="color:white; margin:0.5rem 0 1.5rem 0; font-size:2.8rem;">
+            ${monto_inicial:,.0f}
+        </h2>
+        
+        <div style="background:rgba(255,255,255,0.1); border-radius:12px; padding:1.5rem; margin:1rem auto; max-width:380px;">
+            <p style="color:#86efac; font-size:3.2rem; font-weight:700; margin:0;">
                 ${valor_final:,.0f}
             </p>
-            <p style="color:#86efac; margin:0; font-size:1.3rem;">
+            <p style="color:#86efac; font-size:1.5rem; margin:0.5rem 0 0 0; font-weight:600;">
                 +${ganancia:,.0f} ({retorno_pct:+.1%})
             </p>
-            <p style="color:#64748b; margin-top:0.8rem;">Pulse Fund Strategy</p>
         </div>
-        """, unsafe_allow_html=True)
+        
+        <p style="color:#a5b4fc; margin-top:1.5rem; font-size:1.1rem;">
+            Pulse Fund Strategy
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.divider()
 
-    # Métricas en columnas
+    # Métricas rápidas
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Retorno Total", f"{retorno_total_pulse:+.1%}")
+    c1.metric("Retorno Total", f"{retorno_total_pulse:+.1%}", delta=None)
     c2.metric("Valor Final", f"${valor_final:,.0f}")
     c3.metric("Max Drawdown", f"{max_dd_pulse:.1%}")
     c4.metric("Sharpe Ratio", f"{sharpe_pulse:.2f}")
@@ -407,24 +415,15 @@ with tab2:
         bt_df["🔵 Buy & Hold ETH"] = acum_eth * monto_inicial
 
     fig7 = px.line(bt_df, x=bt_df.index, y=bt_df.columns.tolist(),
-                   title=f"Evolución de ${monto_inicial:,} invertidos",
-                   labels={"value": "Valor (USD)", "variable": "Estrategia"},
+                   title=f"Evolución de ${monto_inicial:,} invertidos desde {fecha_inicio}",
                    color_discrete_map={
                        "Pulse Fund": "#00FF88",
                        "🟠 Buy & Hold BTC": "#F7931A",
                        "🔵 Buy & Hold ETH": "#627EEA"
                    })
-    fig7.add_hline(y=monto_inicial, line_dash="dash", line_color="gray", annotation_text="Inversión inicial")
-    fig7.update_layout(hovermode="x unified", height=500)
+    fig7.add_hline(y=monto_inicial, line_dash="dash", line_color="gray")
+    fig7.update_layout(hovermode="x unified", height=480)
     st.plotly_chart(fig7, use_container_width=True)
-
-    # Tabla de métricas detallada
-    rows = [metricas_serie(retornos_pulse, " Pulse Fund")]
-    if "BTC" in retornos.columns:
-        rows.append(metricas_serie(retornos["BTC"], "🟠 Buy & Hold BTC"))
-    if "ETH" in retornos.columns:
-        rows.append(metricas_serie(retornos["ETH"], "🔵 Buy & Hold ETH"))
-    st.dataframe(pd.DataFrame(rows).set_index("Estrategia"), use_container_width=True)
     
 # ── TAB 3 ─────────────────────────────────────────────────────
 with tab3:
