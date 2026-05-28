@@ -359,53 +359,73 @@ with tab1:
 
 # ── TAB 2 ─────────────────────────────────────────────────────
 with tab2:
-    st.header("Estrategia Pulse Fund")
+    st.header(" Backtesting — Pulse Fund")
 
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Retorno Pulse Fund",  f"{retorno_total_pulse:+.1%}")
-    c2.metric("Max Drawdown",        f"{max_dd_pulse:.1%}")
-    c3.metric("Sharpe Ratio",        f"{sharpe_pulse:.2f}")
-    c4.metric("Tiempo en efectivo",  f"{pct_efectivo:.1%}")
+    # ==================== TABLERO PRINCIPAL ====================
+    st.subheader("¿Qué habría pasado si invertiste en 2023?")
+    
+    col_a, col_b, col_c = st.columns([1, 2, 1])
+    
+    with col_b:
+        valor_final = acum_pulse.iloc[-1] * monto_inicial
+        ganancia = valor_final - monto_inicial
+        retorno_pct = (valor_final / monto_inicial) - 1
+        
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #1e3a8a, #312e81); 
+                    padding: 2rem; border-radius: 16px; text-align: center; 
+                    border: 2px solid #6366f1; margin: 1rem 0;">
+            <p style="color:#93c5fd; margin:0; font-size:1.1rem;">Inversión inicial ({fecha_inicio})</p>
+            <h2 style="color:white; margin:0.2rem 0;">${monto_inicial:,.0f}</h2>
+            
+            <p style="color:#86efac; font-size:2.8rem; font-weight:700; margin:1rem 0;">
+                ${valor_final:,.0f}
+            </p>
+            <p style="color:#86efac; margin:0; font-size:1.3rem;">
+                +${ganancia:,.0f} ({retorno_pct:+.1%})
+            </p>
+            <p style="color:#64748b; margin-top:0.8rem;">Pulse Fund Strategy</p>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.divider()
 
+    # Métricas en columnas
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Retorno Total", f"{retorno_total_pulse:+.1%}")
+    c2.metric("Valor Final", f"${valor_final:,.0f}")
+    c3.metric("Max Drawdown", f"{max_dd_pulse:.1%}")
+    c4.metric("Sharpe Ratio", f"{sharpe_pulse:.2f}")
+
+    st.divider()
+
+    # Gráfico de evolución
     bt_df = pd.DataFrame({"Pulse Fund": acum_pulse * monto_inicial})
     if acum_btc is not None:
         bt_df["🟠 Buy & Hold BTC"] = acum_btc * monto_inicial
     if acum_eth is not None:
         bt_df["🔵 Buy & Hold ETH"] = acum_eth * monto_inicial
-    bt_df = bt_df.dropna()
 
     fig7 = px.line(bt_df, x=bt_df.index, y=bt_df.columns.tolist(),
-                   title=f"Backtesting — ${monto_inicial:,} iniciales",
+                   title=f"Evolución de ${monto_inicial:,} invertidos",
                    labels={"value": "Valor (USD)", "variable": "Estrategia"},
                    color_discrete_map={
-                       " Pulse Fund": "#00FF88",
+                       "Pulse Fund": "#00FF88",
                        "🟠 Buy & Hold BTC": "#F7931A",
                        "🔵 Buy & Hold ETH": "#627EEA"
                    })
-    fig7.add_hline(y=monto_inicial, line_dash="dash", line_color="gray")
-    fig7.update_layout(hovermode="x unified", height=450)
+    fig7.add_hline(y=monto_inicial, line_dash="dash", line_color="gray", annotation_text="Inversión inicial")
+    fig7.update_layout(hovermode="x unified", height=500)
     st.plotly_chart(fig7, use_container_width=True)
 
+    # Tabla de métricas detallada
     rows = [metricas_serie(retornos_pulse, " Pulse Fund")]
     if "BTC" in retornos.columns:
         rows.append(metricas_serie(retornos["BTC"], "🟠 Buy & Hold BTC"))
     if "ETH" in retornos.columns:
         rows.append(metricas_serie(retornos["ETH"], "🔵 Buy & Hold ETH"))
     st.dataframe(pd.DataFrame(rows).set_index("Estrategia"), use_container_width=True)
-
-    conteo = señal_diaria.value_counts()
-    fig8 = px.bar(x=conteo.index, y=conteo.values,
-                  title="Días en cada posición",
-                  labels={"x": "Posición", "y": "Días"},
-                  color=conteo.index,
-                  color_discrete_map={"BTC": "#F7931A", "ETH": "#627EEA",
-                                      "SOL": "#9945FF", "EFECTIVO": "#444444"},
-                  text_auto=True)
-    fig8.update_layout(showlegend=False, height=350)
-    st.plotly_chart(fig8, use_container_width=True)
-
+    
 # ── TAB 3 ─────────────────────────────────────────────────────
 with tab3:
     st.header("Caídas Extremas y Recuperación Post-Crash")
