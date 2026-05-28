@@ -419,8 +419,7 @@ with tab2:
     "💓 Pulse Fund": "#FF2E93",
     "🟠 Buy & Hold BTC": "#FF4FA3",
     "🔵 Buy & Hold ETH": "#7B61FF"
-}
-                  })
+})
     fig.add_hline(y=monto_inicial, line_dash="dash", line_color="gray")
     fig.update_layout(hovermode="x unified", height=480)
     st.plotly_chart(fig, use_container_width=True)
