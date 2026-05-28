@@ -122,11 +122,11 @@ def cargar_datos(tickers, inicio, fin, intervalo="1d"):
         frames = {}
         for ticker in tickers:
             df = yf.download(
-                ticker, 
-                start=inicio, 
+                ticker,
+                start=inicio,
                 end=fin,
-                interval=intervalo,      
-                auto_adjust=True, 
+                interval=intervalo,
+                auto_adjust=True,
                 progress=False
             )
             if not df.empty:
@@ -142,8 +142,26 @@ def cargar_datos(tickers, inicio, fin, intervalo="1d"):
         st.error(f"Error descargando datos: {e}")
         return pd.DataFrame()
 
+with st.spinner("Descargando datos desde Yahoo Finance..."):
+    precios = cargar_datos(tickers, fecha_inicio, fecha_fin, intervalo)
+
+if precios is None or precios.empty:
+    st.error("❌ No se pudieron cargar datos. Verifica la conexión.")
+    st.stop()
+
+if isinstance(precios, pd.Series):
+    precios = precios.to_frame()
+
+st.sidebar.success(f"✅ {len(precios)} días cargados")
+
 # ── CÁLCULOS BASE ─────────────────────────────────────────────
-retornos    = precios.pct_change().dropna()
+retornos = precios.pct_change().dropna()
+retornos = precios.pct_change().dropna()
+volatilidad = retornos.std() * np.sqrt(252)
+umbral_dec = umbral_volatilidad / 100
+portafolio = (1 + retornos).cumprod() * monto_inicial
+
+# ── CÁLCULOS BASE ─────────────────────────────────────────────
 volatilidad = retornos.std() * np.sqrt(252)
 umbral_dec  = umbral_volatilidad / 100
 portafolio  = (1 + retornos).cumprod() * monto_inicial
