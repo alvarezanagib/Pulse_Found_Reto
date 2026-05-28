@@ -11,6 +11,39 @@ import plotly.graph_objects as go
 from datetime import date, timedelta
 import base64
 
+
+st.markdown("""
+<style>
+
+/* MULTISELECT TAGS */
+.stMultiSelect [data-baseweb="tag"] {
+    background: linear-gradient(90deg, #7B61FF, #FF2E93) !important;
+    border-radius: 12px !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* TEXTO DENTRO DEL TAG */
+.stMultiSelect [data-baseweb="tag"] span {
+    color: white !important;
+}
+
+/* X DE CERRAR */
+.stMultiSelect [data-baseweb="tag"] svg {
+    fill: white !important;
+}
+
+/* BORDE DEL SELECTOR */
+.stMultiSelect div[data-baseweb="select"] > div {
+    border: 1px solid rgba(123,97,255,0.35) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 0 12px rgba(123,97,255,0.08);
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 # ── HEADER ──────────────────────────────────────────────────
 st.markdown("""
 <div style="
