@@ -11,61 +11,6 @@ import plotly.graph_objects as go
 from datetime import date, timedelta
 import base64
 
-# ── CSS / ESTILO GENERAL ───────────────────────────────────
-st.markdown("""
-<style>
-
-/* FONDO GENERAL */
-.stApp {
-    background:
-        radial-gradient(circle at top left, rgba(123,97,255,0.12), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(255,46,147,0.10), transparent 30%),
-        linear-gradient(135deg, #0f172a 0%, #111827 45%, #1e1b4b 100%);
-}
-
-/* SIDEBAR */
-section[data-testid="stSidebar"] {
-    background: linear-gradient(
-        180deg,
-        rgba(15,23,42,0.96) 0%,
-        rgba(30,27,75,0.96) 100%
-    );
-    border-right: 1px solid rgba(255,255,255,0.06);
-}
-
-/* TEXTO GENERAL */
-html, body, [class*="css"] {
-    color: #F3F4F6;
-}
-
-/* CARDS / MÉTRICAS */
-[data-testid="metric-container"] {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.06);
-    backdrop-filter: blur(10px);
-    border-radius: 18px;
-    padding: 1rem;
-}
-
-/* TABS */
-button[data-baseweb="tab"] {
-    color: #D1D5DB !important;
-    font-weight: 600;
-}
-
-button[data-baseweb="tab"][aria-selected="true"] {
-    color: #FF2E93 !important;
-}
-
-/* HEADERS */
-h1, h2, h3 {
-    color: white !important;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-
 st.markdown("""
 <style>
 
