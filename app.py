@@ -631,6 +631,7 @@ with tab5:
 st.divider()
 st.caption(
     "🤖 **Disclaimer IA:** Claude Sonnet (Anthropic) — asistencia en estructura del código, "
-    "lógica de backtesting y visualizaciones | " " Grok para analisis y realizacion de la Simulación Monte Carlo"
+    "lógica de backtesting y visualizaciones | " 
+    " Grok para analisis y realizacion de la Simulación Monte Carlo| " 
     "El equipo Pulse Fund definió la estrategia, validó los cálculos "
     "y tomó todas las decisiones analíticas.")
