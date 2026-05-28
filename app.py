@@ -117,13 +117,17 @@ if len(tickers) == 0:
 
 # ── CARGA DE DATOS ───────────────────────────────────────────
 @st.cache_data(ttl=3600)
-def cargar_datos(tickers, inicio, fin):
+def cargar_datos(tickers, inicio, fin, intervalo="1d"):
     try:
         frames = {}
         for ticker in tickers:
             df = yf.download(
-                ticker, start=inicio, end=fin,
-                interval="1d", auto_adjust=True, progress=False
+                ticker, 
+                start=inicio, 
+                end=fin,
+                interval=intervalo,      
+                auto_adjust=True, 
+                progress=False
             )
             if not df.empty:
                 serie = df["Close"]
@@ -135,20 +139,8 @@ def cargar_datos(tickers, inicio, fin):
         resultado = pd.DataFrame(frames)
         return resultado.dropna()
     except Exception as e:
+        st.error(f"Error descargando datos: {e}")
         return pd.DataFrame()
-
-with st.spinner("Descargando datos desde Yahoo Finance..."):
-    precios = cargar_datos(tickers, fecha_inicio, fecha_fin)
-
-if precios is None or precios.empty:
-    st.error("❌ No se pudieron cargar datos. Verifica la conexión.")
-    st.stop()
-
-# Asegurar que precios sea DataFrame con columnas correctas
-if isinstance(precios, pd.Series):
-    precios = precios.to_frame()
-
-st.sidebar.success(f"✅ {len(precios)} días cargados")
 
 # ── CÁLCULOS BASE ─────────────────────────────────────────────
 retornos    = precios.pct_change().dropna()
@@ -254,11 +246,12 @@ def metricas_serie(serie, nombre):
             "Sharpe Ratio":  f"{sh:.2f}"}
 
 # ── TABS ──────────────────────────────────────────────────────
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Análisis Base",
     "Estrategia Pulse Fund",
     "Elemento Cripto",
-    "Recomendación al Inversor"
+    "Recomendación al Inversor",
+    "Simulación Montecarlo"
 ])
 
 # ── TAB 1 ─────────────────────────────────────────────────────
@@ -527,14 +520,15 @@ with tab4:
         st.plotly_chart(fig_a, use_container_width=True)
 
 # ── TAB 5: SIMULACIÓN MONTECARLO ───────────────────────────────
+
 with tab5:
-    st.header("Simulación Montecarlo")
+    st.header(" Simulación Montecarlo")
     st.markdown("""
     <div style="background:#0f172a; padding:1.2rem; border-radius:12px; border:1px solid #334155;">
         <p style="color:#94a3b8; font-size:0.85rem; margin:0 0 0.5rem 0;">¿QUÉ ES ESTO?</p>
         <p style="color:#e2e8f0; margin:0;">
-            Simulamos <strong>1,000 escenarios posibles</strong> del comportamiento futuro 
-            de Pulse Fund basados en su historial real.
+            Simulamos <strong>1,000 escenarios posibles</strong> del comportamiento futuro
+            de Pulse Fund basados en su historial real. No es una predicción.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -545,13 +539,13 @@ with tab5:
     with col2:
         dias_sim = st.number_input("Días a simular:", 30, 730, 180, step=30)
     with col3:
-        inversion_sim = st.number_input("Inversión:", 100, 1_000_000, monto_inicial, step=500)
+        inversion_sim = st.number_input("Inversión inicial:", 100, 1_000_000, monto_inicial, step=500)
 
-    if st.button("Ejecutar simulación", type="primary"):
-        if 'retornos_pulse' not in globals() or retornos_pulse is None or len(retornos_pulse) < 30:
-            st.error("No hay suficientes datos de retornos de Pulse Fund para simular.")
+    if st.button("🚀 Ejecutar Simulación", type="primary"):
+        if retornos_pulse is None or len(retornos_pulse) < 30:
+            st.error("No hay suficientes datos históricos de Pulse Fund.")
         else:
-            with st.spinner("Simulando escenarios..."):
+            with st.spinner("Ejecutando simulación Montecarlo..."):
                 np.random.seed(42)
                 media = retornos_pulse.mean()
                 std = retornos_pulse.std()
@@ -574,7 +568,8 @@ with tab5:
             fig_mc = go.Figure()
             for i in range(min(150, int(num_sim))):
                 fig_mc.add_trace(go.Scatter(
-                    y=capital_sims[i], mode="lines",
+                    y=capital_sims[i], 
+                    mode="lines",
                     line=dict(color="rgba(37,99,235,0.08)", width=1),
                     showlegend=False
                 ))
@@ -583,19 +578,28 @@ with tab5:
                                      (50, "#00FF88", "Esperado (50%)"),
                                      (90, "#3b82f6", "Optimista (90%)")]:
                 vals = np.percentile(capital_sims, p, axis=0)
-                fig_mc.add_trace(go.Scatter(y=vals, mode="lines", name=nombre,
-                                          line=dict(color=color, width=3)))
+                fig_mc.add_trace(go.Scatter(
+                    y=vals, 
+                    mode="lines", 
+                    name=nombre,
+                    line=dict(color=color, width=3)
+                ))
 
             fig_mc.add_hline(y=inversion_sim, line_dash="dash", line_color="gray",
                            annotation_text="Inversión inicial")
 
             fig_mc.update_layout(
                 title=f"Simulación Montecarlo — {num_sim:,} escenarios",
-                xaxis_title="Días", yaxis_title="Capital (USD)",
-                yaxis_tickprefix="$", hovermode="x unified", height=520,
+                xaxis_title="Días simulados",
+                yaxis_title="Capital (USD)",
+                yaxis_tickprefix="$",
+                hovermode="x unified", 
+                height=520,
                 template="plotly_dark"
             )
             st.plotly_chart(fig_mc, use_container_width=True)
+
+            st.success(f"Escenario esperado: **${p50:,.0f}** después de {dias_sim} días.")
 
 # ── DISCLAIMER ───────────────────────────────────────────────
 st.divider()
