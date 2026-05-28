@@ -1,7 +1,6 @@
 # ============================================================
-# PULSE FUND — Concurso Analítica Financiera ITM 2026
+# 💓 PULSE FUND — Concurso Analítica Financiera ITM 2026
 # ============================================================
-
 import streamlit as st
 import yfinance as yf
 import pandas as pd
@@ -11,216 +10,304 @@ import plotly.graph_objects as go
 from datetime import date, timedelta
 import base64
 
+# ── DARK CRYPTO THEME CONFIG ─────────────────────────────────
+st.set_page_config(
+    page_title="Pulse Fund",
+    page_icon="💓",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# ── GLOBAL CSS — Dark Crypto Aesthetic ───────────────────────
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
 
-/* =========================
-   COLOR PRINCIPAL APP
-========================= */
+/* ── ROOT PALETTE (extraída del logo Pulse Fund) ── */
+:root {
+    --bg-deep:      #05040D;
+    --bg-card:      #0D0B1A;
+    --bg-surface:   #120F22;
+    --border:       rgba(255,45,120,0.18);
+    --border-glow:  rgba(255,45,120,0.45);
+    --pink:         #FF2D78;
+    --violet:       #7B2FBE;
+    --indigo:       #4A3FD4;
+    --blue-elec:    #4A6CF7;
+    --silver:       #C8C8E8;
+    --text-primary: #F0EEF8;
+    --text-muted:   #7A7890;
+    --green-neon:   #00FF88;
+    --pulse-grad:   linear-gradient(135deg, #FF2D78 0%, #7B2FBE 50%, #4A3FD4 100%);
+}
 
-/* Tabs activas */
+/* ── GLOBAL BACKGROUND ── */
+html, body, [data-testid="stAppViewContainer"] {
+    background-color: var(--bg-deep) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-testid="stMain"] {
+    background-color: var(--bg-deep) !important;
+}
+
+/* ── SIDEBAR ── */
+[data-testid="stSidebar"] {
+    background: var(--bg-card) !important;
+    border-right: 1px solid var(--border) !important;
+}
+[data-testid="stSidebar"] * {
+    color: var(--text-primary) !important;
+}
+[data-testid="stSidebar"] .stSlider > div > div > div {
+    background: var(--pink) !important;
+}
+
+/* ── HEADERS ── */
+h1, h2, h3 {
+    font-family: 'Orbitron', monospace !important;
+    color: var(--text-primary) !important;
+}
+h2, h3 { color: var(--silver) !important; font-size: 1.1rem !important; }
+
+/* ── TABS ── */
+[data-testid="stTabs"] > div > div {
+    border-bottom: 1px solid var(--border) !important;
+}
 button[data-baseweb="tab"] {
-    color: #6B7280 !important;
+    font-family: 'Rajdhani', sans-serif !important;
     font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    letter-spacing: 0.05em !important;
+    color: var(--text-muted) !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 0.5rem 1.2rem !important;
+    border-bottom: 2px solid transparent !important;
+    transition: all 0.25s ease !important;
 }
-
+button[data-baseweb="tab"]:hover {
+    color: var(--pink) !important;
+    border-bottom-color: var(--pink) !important;
+}
 button[data-baseweb="tab"][aria-selected="true"] {
-    color: #FF2E93 !important;
-    border-bottom: 3px solid #FF2E93 !important;
+    color: var(--pink) !important;
+    border-bottom: 2px solid var(--pink) !important;
+    background: rgba(255,45,120,0.07) !important;
 }
 
-/* Línea debajo tabs */
-.stTabs [data-baseweb="tab-list"] {
-    gap: 24px;
-}
-
-.stTabs [data-baseweb="tab-highlight"] {
-    background-color: #FF2E93 !important;
-}
-
-/* =========================
-   BOTONES
-========================= */
-
-.stButton > button {
-    background: linear-gradient(90deg, #7B61FF, #FF2E93) !important;
-    color: white !important;
-    border: none !important;
+/* ── METRICS ── */
+[data-testid="stMetric"] {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
     border-radius: 12px !important;
+    padding: 1rem 1.2rem !important;
+    position: relative;
+    overflow: hidden;
+}
+[data-testid="stMetric"]::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--pulse-grad);
+}
+[data-testid="stMetricLabel"] > div {
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    color: var(--text-muted) !important;
+}
+[data-testid="stMetricValue"] {
+    font-family: 'Orbitron', monospace !important;
+    font-size: 1.6rem !important;
+    font-weight: 700 !important;
+    color: var(--text-primary) !important;
+}
+[data-testid="stMetricDelta"] {
+    font-family: 'Rajdhani', sans-serif !important;
+}
+
+/* ── DATAFRAMES ── */
+[data-testid="stDataFrame"] {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+}
+
+/* ── SELECT / MULTISELECT / INPUTS ── */
+[data-testid="stMultiSelect"] > div,
+[data-testid="stSelectbox"] > div,
+[data-testid="stNumberInput"] > div {
+    background: var(--bg-surface) !important;
+    border-color: var(--border) !important;
+    color: var(--text-primary) !important;
+    border-radius: 8px !important;
+}
+
+/* ── DIVIDER ── */
+hr {
+    border-color: var(--border) !important;
+}
+
+/* ── INFO / WARNING / ERROR boxes ── */
+[data-testid="stAlert"] {
+    background: rgba(74,63,212,0.12) !important;
+    border: 1px solid rgba(74,63,212,0.3) !important;
+    border-radius: 10px !important;
+    color: var(--silver) !important;
+}
+
+/* ── RADIO BUTTONS ── */
+[data-testid="stRadio"] label {
+    color: var(--text-primary) !important;
+    font-family: 'Rajdhani', sans-serif !important;
     font-weight: 600 !important;
-    padding: 0.6rem 1.2rem !important;
-    box-shadow: 0 4px 14px rgba(123,97,255,0.25);
-    transition: 0.3s ease;
 }
 
-.stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255,46,147,0.35);
+/* ── SPINNER ── */
+[data-testid="stSpinner"] { color: var(--pink) !important; }
+
+/* ── CAPTION / small text ── */
+[data-testid="stCaptionContainer"], small, .stCaption {
+    color: var(--text-muted) !important;
+    font-family: 'Rajdhani', sans-serif !important;
 }
 
-/* =========================
-   SLIDERS
-========================= */
-
-.stSlider [data-baseweb="slider"] div[role="slider"] {
-    background-color: #FF2E93 !important;
-    border: 3px solid white !important;
+/* ── SIDEBAR SUBHEADER ── */
+[data-testid="stSidebar"] h2 {
+    font-family: 'Orbitron', monospace !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 0.12em !important;
+    color: var(--pink) !important;
 }
 
-.stSlider [data-baseweb="slider"] > div > div {
-    background: linear-gradient(90deg, #7B61FF, #FF2E93) !important;
+/* ── PULSE TAGS ── */
+.pulse-tag {
+    display: inline-block;
+    background: rgba(255,45,120,0.1);
+    border: 1px solid rgba(255,45,120,0.35);
+    color: #FF7AAD;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-right: 6px;
+    margin-top: 4px;
 }
 
-/* =========================
-   RADIO BUTTONS
-========================= */
-
-.stRadio div[role="radiogroup"] label[data-baseweb="radio"] div:first-child {
-    background-color: white !important;
-    border-color: #C084FC !important;
+/* ── PLOTLY CHART backgrounds ── */
+.js-plotly-plot .plotly .bg {
+    fill: transparent !important;
 }
 
-.stRadio div[role="radiogroup"] label[data-baseweb="radio"] input:checked + div {
-    background-color: #FF2E93 !important;
-    border-color: #FF2E93 !important;
+/* ── Success badge in sidebar ── */
+[data-testid="stSidebar"] [data-testid="stAlert"] {
+    background: rgba(0,255,136,0.08) !important;
+    border-color: rgba(0,255,136,0.25) !important;
 }
 
-/* =========================
-   MULTISELECT TAGS
-========================= */
-
-.stMultiSelect [data-baseweb="tag"] {
-    background: linear-gradient(90deg, #7B61FF, #FF2E93) !important;
-    border-radius: 12px !important;
-    border: none !important;
-    color: white !important;
-    font-weight: 600 !important;
-}
-
-.stMultiSelect [data-baseweb="tag"] span {
-    color: white !important;
-}
-
-.stMultiSelect [data-baseweb="tag"] svg {
-    fill: white !important;
-}
-
-/* =========================
-   INPUTS Y SELECTORES
-========================= */
-
-div[data-baseweb="select"] > div {
-    border-radius: 14px !important;
-    border: 1px solid rgba(123,97,255,0.35) !important;
-    box-shadow: 0 0 10px rgba(123,97,255,0.08);
-}
-
-/* =========================
-   SIDEBAR
-========================= */
-
-section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #faf5ff 0%, #f5f3ff 100%);
-}
-
-/* =========================
-   MÉTRICAS
-========================= */
-
-[data-testid="metric-container"] {
-    border-radius: 16px;
-    padding: 1rem;
-    background: rgba(255,255,255,0.65);
-    border: 1px solid rgba(123,97,255,0.12);
-    box-shadow: 0 4px 20px rgba(123,97,255,0.08);
-}
-
-/* =========================
-   SCROLLBAR
-========================= */
-
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(#7B61FF, #FF2E93);
-    border-radius: 10px;
-}
-
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--violet); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--pink); }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<style>
+# ── PLOTLY DARK TEMPLATE ──────────────────────────────────────
+PLOTLY_DARK = dict(
+    paper_bgcolor="rgba(13,11,26,0.0)",
+    plot_bgcolor="rgba(13,11,26,0.0)",
+    font=dict(family="Rajdhani, sans-serif", color="#C8C8E8", size=13),
+    xaxis=dict(
+        gridcolor="rgba(255,45,120,0.08)",
+        linecolor="rgba(255,45,120,0.2)",
+        tickcolor="rgba(255,45,120,0.3)",
+    ),
+    yaxis=dict(
+        gridcolor="rgba(255,45,120,0.08)",
+        linecolor="rgba(255,45,120,0.2)",
+        tickcolor="rgba(255,45,120,0.3)",
+    ),
+    legend=dict(
+        bgcolor="rgba(13,11,26,0.7)",
+        bordercolor="rgba(255,45,120,0.2)",
+        borderwidth=1,
+    ),
+    title=dict(font=dict(family="Orbitron, monospace", size=14, color="#F0EEF8")),
+    colorway=["#FF2D78", "#4A6CF7", "#9945FF", "#00FF88", "#F7931A"],
+)
 
-/* MULTISELECT TAGS */
-.stMultiSelect [data-baseweb="tag"] {
-    background: linear-gradient(90deg, #7B61FF, #FF2E93) !important;
-    border-radius: 12px !important;
-    border: none !important;
-    color: white !important;
-    font-weight: 600 !important;
-}
+def apply_dark(fig, height=400):
+    fig.update_layout(height=height, **PLOTLY_DARK)
+    return fig
 
-/* TEXTO DENTRO DEL TAG */
-.stMultiSelect [data-baseweb="tag"] span {
-    color: white !important;
-}
-
-/* X DE CERRAR */
-.stMultiSelect [data-baseweb="tag"] svg {
-    fill: white !important;
-}
-
-/* BORDE DEL SELECTOR */
-.stMultiSelect div[data-baseweb="select"] > div {
-    border: 1px solid rgba(123,97,255,0.35) !important;
-    border-radius: 14px !important;
-    box-shadow: 0 0 12px rgba(123,97,255,0.08);
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-# ── HEADER ──────────────────────────────────────────────────
+# ── HEADER ───────────────────────────────────────────────────
 st.markdown("""
 <div style="
-    background: linear-gradient(135deg, #fcfbff 0%, #f5f3ff 60%);
-    border: 1px solid rgba(168,85,247,0.15);
+    background: linear-gradient(135deg, #0D0B1A 0%, #120F22 60%);
+    border: 1px solid rgba(255,45,120,0.22);
     border-radius: 20px;
     padding: 2rem 2.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 8px 32px rgba(168,85,247,0.08);
+    box-shadow: 0 8px 48px rgba(255,45,120,0.12), 0 0 0 1px rgba(74,63,212,0.15) inset;
+    position: relative;
+    overflow: hidden;
 ">
-    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:0.5rem;">
-        <span style="font-size:3rem;"></span>
+    <!-- neon glow strip top -->
+    <div style="
+        position:absolute; top:0; left:0; right:0; height:2px;
+        background: linear-gradient(90deg, #FF2D78, #7B2FBE, #4A3FD4, #4A6CF7);
+    "></div>
+    <!-- decorative grid -->
+    <div style="
+        position:absolute; inset:0; opacity:0.03;
+        background-image: linear-gradient(rgba(255,45,120,1) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(255,45,120,1) 1px, transparent 1px);
+        background-size: 40px 40px;
+    "></div>
+
+    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:0.5rem; position:relative;">
+        <span style="font-size:2.8rem; filter:drop-shadow(0 0 12px #FF2D78);">💓</span>
         <h1 style="
-            background: linear-gradient(90deg, #7c3aed, #ec4899);
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(90deg, #FF2D78 0%, #C060F0 50%, #4A6CF7 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 3rem;
-            font-weight: 800;
+            font-size: 2.8rem;
+            font-weight: 900;
             margin: 0;
-            letter-spacing: -1px;
-        ">Pulse Fund</h1>
+            letter-spacing: 2px;
+        ">PULSE FUND</h1>
     </div>
-    <p style="color:#4b5563; font-size:1.1rem; margin:0; font-weight:400;">
+    <p style="
+        color: #A09CB8;
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 1.05rem;
+        margin: 0 0 1rem 0;
+        font-weight: 400;
+        letter-spacing: 0.03em;
+        position:relative;
+    ">
         Invertimos cuando el mercado tiene pulso fuerte.
-        <span style="color:#db2777; font-weight:600;">Cuando hay tormenta, esperamos.</span>
+        <span style="color:#FF2D78; font-weight:700;">Cuando hay tormenta, esperamos.</span>
     </p>
-    <div style="margin-top:1rem;">
-        <span class="pulse-tag"> Momentum</span>
-        <span class="pulse-tag"> Filtro Volatilidad</span>
-        <span class="pulse-tag"> Rebalanceo Mensual</span>
-        <span class="pulse-tag"> BTC · ETH · SOL</span>
+    <div style="position:relative;">
+        <span class="pulse-tag">⚡ Momentum</span>
+        <span class="pulse-tag">🛡 Filtro Volatilidad</span>
+        <span class="pulse-tag">🔄 Rebalanceo Mensual</span>
+        <span class="pulse-tag">₿ BTC · ETH · SOL</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ── SIDEBAR ──────────────────────────────────────────────────
+# ── SIDEBAR ───────────────────────────────────────────────────
 with st.sidebar:
-    # ── LOGO ─────────────────────────────────
     def cargar_logo(path):
         try:
             with open(path, "rb") as f:
@@ -229,26 +316,40 @@ with st.sidebar:
             return None
 
     logo_b64 = cargar_logo("logo.png")
-
     if logo_b64:
         st.markdown(f"""
         <div style="text-align:center; padding:1rem 0 0.5rem 0;">
-            <img src="data:image/png;base64,{logo_b64}" 
-                 style="width:150px; border-radius:16px;">
+            <img src="data:image/png;base64,{logo_b64}"
+                 style="width:150px; border-radius:16px;
+                        box-shadow: 0 0 24px rgba(255,45,120,0.35);">
         </div>
         """, unsafe_allow_html=True)
-# ── SIDEBAR ──────────────────────────────────────────────────
+    else:
+        st.markdown("""
+        <div style="
+            text-align:center; padding:1.5rem 0 1rem 0;
+            font-family:'Orbitron',monospace;
+            background: linear-gradient(90deg,#FF2D78,#4A6CF7);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            font-size:1.2rem; font-weight:900; letter-spacing:3px;
+        ">💓 PULSE FUND</div>
+        """, unsafe_allow_html=True)
 
+    st.markdown("""
+    <div style="
+        border-bottom: 1px solid rgba(255,45,120,0.2);
+        margin-bottom:1rem;
+    "></div>
+    """, unsafe_allow_html=True)
+
+# ── SIDEBAR PARAMS ────────────────────────────────────────────
 st.sidebar.header("⚙️ Parámetros")
 
 criptos_disponibles = {
     "Bitcoin (BTC)": "BTC-USD",
     "Ethereum (ETH)": "ETH-USD",
-    "Solana (SOL)": "SOL-USD",
-    "Litecoin (LTC)": "LTC-USD",
-    "Cardano (ADA)": "ADA-USD"
+    "Solana (SOL)": "SOL-USD"
 }
-
 criptos_seleccionadas = st.sidebar.multiselect(
     "Criptomonedas:",
     options=list(criptos_disponibles.keys()),
@@ -264,44 +365,31 @@ fecha_inicio = st.sidebar.date_input(
 )
 fecha_fin = date.today()
 
-frecuencia = st.sidebar.selectbox(
-    "Frecuencia de análisis:",
-    options=["Diaria", "Semanal", "Mensual"],
-    index=0
-)
-frecuencia_map = {"Diaria": "1d", "Semanal": "1wk", "Mensual": "1mo"}
-intervalo = frecuencia_map[frecuencia]
-
 monto_inicial = st.sidebar.number_input(
     "Monto hipotético (USD):",
     min_value=100, max_value=1_000_000, value=10_000, step=500
 )
-
 st.sidebar.divider()
 st.sidebar.subheader("Parámetros Pulse Fund")
-ventana_momentum    = st.sidebar.slider("Ventana momentum (días):", 30, 90, 60)
-umbral_volatilidad  = st.sidebar.slider("Umbral volatilidad (% diario):", 1.0, 10.0, 6.0, 0.5)
+ventana_momentum   = st.sidebar.slider("Ventana momentum (días):", 30, 90, 60)
+umbral_volatilidad = st.sidebar.slider("Umbral volatilidad (% diario):", 1.0, 10.0, 6.0, 0.5)
 ventana_volatilidad = 21
-costo_transaccion   = 0.001
+costo_transaccion  = 0.001
 
-# ── VALIDACIÓN ───────────────────────────────────────────────
+# ── VALIDACIÓN ────────────────────────────────────────────────
 if len(tickers) == 0:
-    st.warning(" Selecciona al menos una criptomoneda.")
+    st.warning("⚠️ Selecciona al menos una criptomoneda.")
     st.stop()
 
-# ── CARGA DE DATOS ───────────────────────────────────────────
+# ── CARGA DE DATOS ────────────────────────────────────────────
 @st.cache_data(ttl=3600)
-def cargar_datos(tickers, inicio, fin, intervalo="1d"):
+def cargar_datos(tickers, inicio, fin):
     try:
         frames = {}
         for ticker in tickers:
             df = yf.download(
-                ticker,
-                start=inicio,
-                end=fin,
-                interval=intervalo,
-                auto_adjust=True,
-                progress=False
+                ticker, start=inicio, end=fin,
+                interval="1d", auto_adjust=True, progress=False
             )
             if not df.empty:
                 serie = df["Close"]
@@ -313,11 +401,10 @@ def cargar_datos(tickers, inicio, fin, intervalo="1d"):
         resultado = pd.DataFrame(frames)
         return resultado.dropna()
     except Exception as e:
-        st.error(f"Error descargando datos: {e}")
         return pd.DataFrame()
 
-with st.spinner("Descargando datos desde Yahoo Finance..."):
-    precios = cargar_datos(tickers, fecha_inicio, fecha_fin, intervalo)
+with st.spinner("⚡ Descargando datos desde Yahoo Finance..."):
+    precios = cargar_datos(tickers, fecha_inicio, fecha_fin)
 
 if precios is None or precios.empty:
     st.error("❌ No se pudieron cargar datos. Verifica la conexión.")
@@ -328,14 +415,8 @@ if isinstance(precios, pd.Series):
 
 st.sidebar.success(f"✅ {len(precios)} días cargados")
 
-# ── CÁLCULOS BASE ─────────────────────────────────────────────
-retornos = precios.pct_change().dropna()
-retornos = precios.pct_change().dropna()
-volatilidad = retornos.std() * np.sqrt(252)
-umbral_dec = umbral_volatilidad / 100
-portafolio = (1 + retornos).cumprod() * monto_inicial
-
-# ── CÁLCULOS BASE ─────────────────────────────────────────────
+# ── CÁLCULOS BASE ──────────────────────────────────────────────
+retornos   = precios.pct_change().dropna()
 volatilidad = retornos.std() * np.sqrt(252)
 umbral_dec  = umbral_volatilidad / 100
 portafolio  = (1 + retornos).cumprod() * monto_inicial
@@ -345,29 +426,21 @@ def calcular_drawdown(serie):
     return (serie - pico) / pico
 
 colores = {
-    "BTC": "#FF4FA3",        # Rosa neón del logo
-    "ETH": "#7B61FF",        # Morado eléctrico
-    "SOL": "#D946EF",        # Fucsia intenso
-    "LTC": "#C084FC",        # Lavanda brillante
-    "ADA": "#5B21B6",        # Morado oscuro elegante
-    "Pulse Fund": "#FF2E93"  # Rosa principal del branding
+    "BTC": "#F7931A", "ETH": "#4A6CF7",
+    "SOL": "#9945FF", "Pulse Fund": "#00FF88"
 }
-
 fill_colors = {
-    "BTC": "rgba(255,79,163,0.15)",
-    "ETH": "rgba(123,97,255,0.15)",
-    "SOL": "rgba(217,70,239,0.15)",
-    "LTC": "rgba(192,132,252,0.15)",
-    "ADA": "rgba(91,33,182,0.15)"
+    "BTC": "rgba(247,147,26,0.12)",
+    "ETH": "rgba(74,108,247,0.12)",
+    "SOL": "rgba(153,69,255,0.12)"
 }
 
-# ── ESTRATEGIA PULSE FUND ─────────────────────────────────────
-momentum        = precios.pct_change(ventana_momentum)
+# ── ESTRATEGIA PULSE FUND ──────────────────────────────────────
+momentum       = precios.pct_change(ventana_momentum)
 volatilidad_rod = retornos.rolling(ventana_volatilidad).std()
+dias_rebalanceo = precios.resample('MS').first().index
 
-dias_rebalanceo   = precios.resample('MS').first().index
 señales_mensuales = {}
-
 for fecha_mes in dias_rebalanceo:
     dias_disp = precios.index[precios.index >= fecha_mes]
     if len(dias_disp) == 0:
@@ -379,38 +452,30 @@ for fecha_mes in dias_rebalanceo:
     except KeyError:
         señales_mensuales[fecha_real] = "EFECTIVO"
         continue
-
     if isinstance(fila_mom, pd.Series):
         criptos_pos = fila_mom[fila_mom > 0]
     else:
         señales_mensuales[fecha_real] = "EFECTIVO"
         continue
-
     if criptos_pos.empty:
         señales_mensuales[fecha_real] = "EFECTIVO"
         continue
-
-    mejor = criptos_pos.idxmax()
+    mejor    = criptos_pos.idxmax()
     vol_mejor = fila_vol[mejor] if mejor in fila_vol.index else None
-
     if vol_mejor is not None and pd.notna(vol_mejor) and vol_mejor < umbral_dec:
         señales_mensuales[fecha_real] = str(mejor).replace("-USD", "")
     else:
         señales_mensuales[fecha_real] = "EFECTIVO"
 
-# Expandir señales a días
 señal_diaria = pd.Series("EFECTIVO", index=precios.index, dtype=str)
-fechas_ord   = sorted(señales_mensuales.keys())
-
+fechas_ord = sorted(señales_mensuales.keys())
 for i, f_ini in enumerate(fechas_ord):
     f_fin = fechas_ord[i + 1] if i + 1 < len(fechas_ord) else None
-    mask  = (precios.index >= f_ini) & (precios.index < f_fin) if f_fin else (precios.index >= f_ini)
+    mask = (precios.index >= f_ini) & (precios.index < f_fin) if f_fin else (precios.index >= f_ini)
     señal_diaria[mask] = señales_mensuales[f_ini]
 
-# Retornos con costos
-retornos_pulse    = pd.Series(0.0, index=retornos.index)
+retornos_pulse = pd.Series(0.0, index=retornos.index)
 posicion_anterior = "EFECTIVO"
-
 for fecha in retornos.index:
     señal = señal_diaria.get(fecha, "EFECTIVO")
     costo = costo_transaccion if señal != posicion_anterior else 0.0
@@ -420,40 +485,38 @@ for fecha in retornos.index:
     else:
         retornos_pulse[fecha] = retornos.loc[fecha, señal] - costo
 
-# Portafolios
 acum_pulse = (1 + retornos_pulse).cumprod()
 acum_btc   = (1 + retornos["BTC"]).cumprod() if "BTC" in retornos.columns else None
 acum_eth   = (1 + retornos["ETH"]).cumprod() if "ETH" in retornos.columns else None
 
 retorno_total_pulse = (1 + retornos_pulse).prod() - 1
-vol_pulse           = retornos_pulse.std() * np.sqrt(252)
-dd_pulse_serie      = calcular_drawdown(acum_pulse)
-max_dd_pulse        = dd_pulse_serie.min()
-sharpe_pulse        = (retornos_pulse.mean() * 252) / (retornos_pulse.std() * np.sqrt(252))
-pct_efectivo        = (señal_diaria == "EFECTIVO").mean()
+vol_pulse    = retornos_pulse.std() * np.sqrt(252)
+dd_pulse_serie = calcular_drawdown(acum_pulse)
+max_dd_pulse   = dd_pulse_serie.min()
+sharpe_pulse   = (retornos_pulse.mean() * 252) / (retornos_pulse.std() * np.sqrt(252))
+pct_efectivo   = (señal_diaria == "EFECTIVO").mean()
 
 def metricas_serie(serie, nombre):
-    ret  = (1 + serie).prod() - 1
-    vol  = serie.std() * np.sqrt(252)
+    ret = (1 + serie).prod() - 1
+    vol = serie.std() * np.sqrt(252)
     acum = (1 + serie).cumprod()
-    dd   = calcular_drawdown(acum).min()
-    sh   = (serie.mean() * 252) / (serie.std() * np.sqrt(252))
+    dd  = calcular_drawdown(acum).min()
+    sh  = (serie.mean() * 252) / (serie.std() * np.sqrt(252))
     return {"Estrategia": nombre,
             "Retorno total": f"{ret:+.1%}",
             "Volatilidad":   f"{vol:.1%}",
             "Max Drawdown":  f"{dd:.1%}",
             "Sharpe Ratio":  f"{sh:.2f}"}
 
-# ── TABS ──────────────────────────────────────────────────────
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "Análisis Base",
-    "Estrategia Pulse Fund",
-    "Elemento Cripto",
-    "Recomendación al Inversor",
-    "Simulación Montecarlo"
+# ── TABS ───────────────────────────────────────────────────────
+tab1, tab2, tab3, tab4 = st.tabs([
+    "📊 Análisis Base",
+    "💓 Estrategia Pulse Fund",
+    "⚡ Elemento Cripto",
+    "🎯 Recomendación al Inversor"
 ])
 
-# ── TAB 1 ─────────────────────────────────────────────────────
+# ── TAB 1 ──────────────────────────────────────────────────────
 with tab1:
     st.header("Análisis Base")
 
@@ -466,19 +529,21 @@ with tab1:
     st.divider()
 
     fig1 = px.line(precios, x=precios.index, y=precios.columns.tolist(),
-                   title="Evolución de precios",
+                   title="Evolución de Precios",
                    labels={"value": "Precio (USD)", "variable": "Cripto"},
                    color_discrete_map=colores)
-    fig1.update_layout(hovermode="x unified", height=400)
+    fig1.update_layout(hovermode="x unified")
+    apply_dark(fig1)
     st.plotly_chart(fig1, use_container_width=True)
 
     precios_reb = (precios / precios.iloc[0]) * 100
     fig2 = px.line(precios_reb, x=precios_reb.index, y=precios_reb.columns.tolist(),
-                   title="Rendimiento comparado (base 100)",
+                   title="Rendimiento Comparado (base 100)",
                    labels={"value": "Rendimiento", "variable": "Cripto"},
                    color_discrete_map=colores)
-    fig2.add_hline(y=100, line_dash="dash", line_color="gray")
-    fig2.update_layout(hovermode="x unified", height=400)
+    fig2.add_hline(y=100, line_dash="dash", line_color="rgba(255,255,255,0.2)")
+    fig2.update_layout(hovermode="x unified")
+    apply_dark(fig2)
     st.plotly_chart(fig2, use_container_width=True)
 
     col1, col2 = st.columns(2)
@@ -486,26 +551,28 @@ with tab1:
         vol_df = volatilidad.reset_index()
         vol_df.columns = ["Cripto", "Volatilidad"]
         fig3 = px.bar(vol_df, x="Cripto", y="Volatilidad",
-                      title="Volatilidad anualizada",
+                      title="Volatilidad Anualizada",
                       color="Cripto", color_discrete_map=colores, text_auto=".1%")
         fig3.update_layout(yaxis_tickformat=".0%", showlegend=False)
+        apply_dark(fig3, height=350)
         st.plotly_chart(fig3, use_container_width=True)
-
     with col2:
         pct_neg = (retornos < 0).mean().reset_index()
         pct_neg.columns = ["Cripto", "Pct_Neg"]
         fig4 = px.bar(pct_neg, x="Cripto", y="Pct_Neg",
-                      title="Porcentaje días con retorno negativo",
+                      title="% Días con Retorno Negativo",
                       color="Cripto", color_discrete_map=colores, text_auto=".1%")
         fig4.update_layout(yaxis_tickformat=".0%", showlegend=False)
+        apply_dark(fig4, height=350)
         st.plotly_chart(fig4, use_container_width=True)
 
     fig5 = px.line(portafolio, x=portafolio.index, y=portafolio.columns.tolist(),
-                   title=f"Valor de ${monto_inicial:,} invertidos",
+                   title=f"Valor de ${monto_inicial:,} Invertidos",
                    labels={"value": "Valor (USD)", "variable": "Cripto"},
                    color_discrete_map=colores)
-    fig5.add_hline(y=monto_inicial, line_dash="dash", line_color="gray")
-    fig5.update_layout(hovermode="x unified", height=400)
+    fig5.add_hline(y=monto_inicial, line_dash="dash", line_color="rgba(255,255,255,0.2)")
+    fig5.update_layout(hovermode="x unified")
+    apply_dark(fig5)
     st.plotly_chart(fig5, use_container_width=True)
 
     fig6 = go.Figure()
@@ -518,112 +585,96 @@ with tab1:
             fillcolor=fill_colors.get(cripto, "rgba(128,128,128,0.1)")
         ))
     fig6.update_layout(title="Maximum Drawdown",
-                       yaxis_tickformat=".0%", hovermode="x unified", height=400)
+                       yaxis_tickformat=".0%", hovermode="x unified")
+    apply_dark(fig6)
     st.plotly_chart(fig6, use_container_width=True)
 
-    st.subheader(" Resumen de métricas")
+    st.subheader("📋 Resumen de Métricas")
     resumen = pd.DataFrame({
-        "Retorno total":     (precios.iloc[-1]/precios.iloc[0]-1).map("{:+.1%}".format),
+        "Retorno total":    (precios.iloc[-1]/precios.iloc[0]-1).map("{:+.1%}".format),
         "Volatilidad anual": volatilidad.map("{:.1%}".format),
-        "Max Drawdown":      {c: f"{calcular_drawdown(precios[c]).min():.1%}" for c in precios.columns},
-        "% Días negativos":  (retornos < 0).mean().map("{:.1%}".format)
+        "Max Drawdown":     {c: f"{calcular_drawdown(precios[c]).min():.1%}" for c in precios.columns},
+        "% Días negativos": (retornos < 0).mean().map("{:.1%}".format)
     })
     st.dataframe(resumen, use_container_width=True)
 
-# ── TAB 2 ─────────────────────────────────────────────────────
+# ── TAB 2 ──────────────────────────────────────────────────────
 with tab2:
-    st.header("Backtesting — Pulse Fund")
+    st.header("Estrategia Pulse Fund")
 
-    # ==================== RESULTADO PRINCIPAL ====================
-    st.subheader("¿Qué habría pasado si invertiste en Pulse Fund?")
-
-    # Cálculos
-    valor_final = float(acum_pulse.iloc[-1] * monto_inicial)
-    ganancia = valor_final - monto_inicial
-    retorno_pct = (valor_final / monto_inicial) - 1
-
-    # Tarjeta principal
-    st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #1e3a8a, #312e81); 
-                padding: 2rem; border-radius: 20px; text-align: center; 
-                border: 2px solid #6366f1; margin: 1.5rem 0;">
-        <p style="color: #93c5fd; margin-bottom: 0.5rem; font-size: 1.1rem;">
-            Inversión inicial • {fecha_inicio}
-        </p>
-        <h1 style="color: white; margin: 0.3rem 0; font-size: 2.8rem;">
-            ${monto_inicial:,.0f}
-        </h1>
-        <hr style="border-color: rgba(255,255,255,0.2); margin: 1.2rem 0;">
-        <p style="color: #86efac; font-size: 3rem; font-weight: 700; margin: 0;">
-            ${valor_final:,.0f}
-        </p>
-        <p style="color: #86efac; font-size: 1.6rem; font-weight: 600;">
-            +${ganancia:,.0f} ({retorno_pct:+.1%})
-        </p>
-        <p style="color: #a5b4fc; margin-top: 1rem; font-size: 1.1rem;">
-            Pulse Fund Strategy
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Retorno Pulse Fund",  f"{retorno_total_pulse:+.1%}")
+    c2.metric("Max Drawdown",        f"{max_dd_pulse:.1%}")
+    c3.metric("Sharpe Ratio",        f"{sharpe_pulse:.2f}")
+    c4.metric("Tiempo en efectivo",  f"{pct_efectivo:.1%}")
 
     st.divider()
 
-    # Métricas adicionales
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Retorno Total", f"{retorno_total_pulse:+.1%}")
-    col2.metric("Valor Final", f"${valor_final:,.0f}")
-    col3.metric("Max Drawdown", f"{max_dd_pulse:.1%}")
-    col4.metric("Sharpe Ratio", f"{sharpe_pulse:.2f}")
-
-    st.divider()
-
-    # Gráfico comparativo
     bt_df = pd.DataFrame({"💓 Pulse Fund": acum_pulse * monto_inicial})
     if acum_btc is not None:
-        bt_df[" Buy & Hold BTC"] = acum_btc * monto_inicial
+        bt_df["🟠 Buy & Hold BTC"] = acum_btc * monto_inicial
     if acum_eth is not None:
-        bt_df[" Buy & Hold ETH"] = acum_eth * monto_inicial
+        bt_df["🔵 Buy & Hold ETH"] = acum_eth * monto_inicial
+    bt_df = bt_df.dropna()
 
-    fig = px.line(bt_df, x=bt_df.index, y=bt_df.columns,
-                  title=f"Evolución de ${monto_inicial:,.0f} invertidos",
-                  color_discrete_map={
-                    
-    "💓 Pulse Fund": "#FF2E93",
-    " Buy & Hold BTC": "#C084FC",
-    " Buy & Hold ETH": "#7B61FF"
-})
-    fig.add_hline(y=monto_inicial, line_dash="dash", line_color="gray")
-    fig.update_layout(hovermode="x unified", height=480)
-    st.plotly_chart(fig, use_container_width=True)
-    
-# ── TAB 3 ─────────────────────────────────────────────────────
+    fig7 = px.line(bt_df, x=bt_df.index, y=bt_df.columns.tolist(),
+                   title=f"Backtesting — ${monto_inicial:,} Iniciales",
+                   labels={"value": "Valor (USD)", "variable": "Estrategia"},
+                   color_discrete_map={
+                       "💓 Pulse Fund":    "#00FF88",
+                       "🟠 Buy & Hold BTC": "#F7931A",
+                       "🔵 Buy & Hold ETH": "#4A6CF7"
+                   })
+    fig7.add_hline(y=monto_inicial, line_dash="dash", line_color="rgba(255,255,255,0.15)")
+    fig7.update_layout(hovermode="x unified")
+    apply_dark(fig7, height=450)
+    st.plotly_chart(fig7, use_container_width=True)
+
+    rows = [metricas_serie(retornos_pulse, "💓 Pulse Fund")]
+    if "BTC" in retornos.columns:
+        rows.append(metricas_serie(retornos["BTC"], "🟠 Buy & Hold BTC"))
+    if "ETH" in retornos.columns:
+        rows.append(metricas_serie(retornos["ETH"], "🔵 Buy & Hold ETH"))
+    st.dataframe(pd.DataFrame(rows).set_index("Estrategia"), use_container_width=True)
+
+    conteo = señal_diaria.value_counts()
+    fig8 = px.bar(x=conteo.index, y=conteo.values,
+                  title="Días en Cada Posición",
+                  labels={"x": "Posición", "y": "Días"},
+                  color=conteo.index,
+                  color_discrete_map={"BTC": "#F7931A", "ETH": "#4A6CF7",
+                                      "SOL": "#9945FF", "EFECTIVO": "#2A2840"},
+                  text_auto=True)
+    fig8.update_layout(showlegend=False)
+    apply_dark(fig8, height=350)
+    st.plotly_chart(fig8, use_container_width=True)
+
+# ── TAB 3 ──────────────────────────────────────────────────────
 with tab3:
     st.header("Caídas Extremas y Recuperación Post-Crash")
     st.caption("Análisis específico del ecosistema cripto — mercado 24/7 con crashes frecuentes")
 
     UMBRAL_CRASH = 0.20
     crashes_list = []
-
     for cripto in precios.columns:
-        p      = precios[cripto]
+        p = precios[cripto]
         pico_h = p.expanding().max()
         dd_s   = (p - pico_h) / pico_h
-        en_crash  = dd_s <= -UMBRAL_CRASH
+        en_crash = dd_s <= -UMBRAL_CRASH
         ini_crash = en_crash & ~en_crash.shift(1).fillna(False)
-
         for f_ini in p.index[ini_crash]:
             precio_pico = float(pico_h[f_ini])
-            post        = p[f_ini:]
-            f_valle     = post.idxmin()
-            caida       = float((post.min() - precio_pico) / precio_pico)
-            rec         = p[f_valle:]
-            rec_ok      = rec[rec >= precio_pico]
-            dias_rec    = (rec_ok.index[0] - f_valle).days if len(rec_ok) > 0 else None
+            post   = p[f_ini:]
+            f_valle = post.idxmin()
+            caida  = float((post.min() - precio_pico) / precio_pico)
+            rec    = p[f_valle:]
+            rec_ok = rec[rec >= precio_pico]
+            dias_rec = (rec_ok.index[0] - f_valle).days if len(rec_ok) > 0 else None
             crashes_list.append({
-                "Cripto":            cripto,
-                "Inicio crash":      f_ini.date(),
-                "Valle":             f_valle.date(),
-                "Caída máxima":      f"{caida:.1%}",
+                "Cripto":          cripto,
+                "Inicio crash":    f_ini.date(),
+                "Valle":           f_valle.date(),
+                "Caída máxima":    f"{caida:.1%}",
                 "Días recuperación": f"{dias_rec} días" if dias_rec else "Aún no recuperado"
             })
 
@@ -639,39 +690,36 @@ with tab3:
             fill="tozeroy",
             fillcolor=fill_colors.get(cripto, "rgba(128,128,128,0.1)")
         ))
-    fig9.add_hline(y=-UMBRAL_CRASH, line_dash="dash", line_color="red",
-                   annotation_text="Umbral crash -20%")
-    fig9.update_layout(title="Drawdown histórico y zonas de crash",
-                       yaxis_tickformat=".0%", hovermode="x unified", height=430)
+    fig9.add_hline(y=-UMBRAL_CRASH, line_dash="dash", line_color="#FF2D78",
+                   annotation_text="Umbral crash -20%",
+                   annotation_font_color="#FF2D78")
+    fig9.update_layout(title="Drawdown Histórico y Zonas de Crash",
+                       yaxis_tickformat=".0%", hovermode="x unified")
+    apply_dark(fig9, height=430)
     st.plotly_chart(fig9, use_container_width=True)
 
-    st.subheader("🔗 Correlación entre criptomonedas")
-    corr  = retornos.corr()
-    fig10 = px.imshow(corr, title="Correlación de retornos diarios",
-                     color_continuous_scale=[
-    [0.0, "#5B21B6"],
-    [0.25, "#7B61FF"],
-    [0.5, "#C084FC"],
-    [0.75, "#FF4FA3"],
-    [1.0, "#FF2E93"]
-],
+    st.subheader("🔗 Correlación entre Criptomonedas")
+    corr = retornos.corr()
+    fig10 = px.imshow(corr, title="Correlación de Retornos Diarios",
+                      color_continuous_scale=["#4A3FD4", "#120F22", "#FF2D78"],
                       zmin=-1, zmax=1, text_auto=".2f")
-    fig10.update_layout(height=380)
+    apply_dark(fig10, height=380)
     st.plotly_chart(fig10, use_container_width=True)
-    st.info("Alta correlación justifica la rotación — elegir la más fuerte cada mes "
+
+    st.info("⚡ Alta correlación justifica la rotación — elegir la más fuerte cada mes "
             "es más eficiente que diversificar entre activos que se mueven igual.")
 
-# ── TAB 4 ─────────────────────────────────────────────────────
+# ── TAB 4 ──────────────────────────────────────────────────────
 with tab4:
     st.header("Recomendación al Inversor")
 
     perfil = st.radio("Selecciona tu perfil:",
-                      [" Conservador", " Moderado", " Agresivo"],
+                      ["🛡 Conservador", "⚖️ Moderado", "🚀 Agresivo"],
                       horizontal=True)
     st.divider()
 
     if "Conservador" in perfil:
-        st.subheader("Perfil Conservador — Protección del capital")
+        st.subheader("Perfil Conservador — Protección del Capital")
         dd_btc_val = calcular_drawdown(acum_btc).min() if acum_btc is not None else 0
         col1, col2 = st.columns(2)
         col1.metric("Max Drawdown Pulse Fund", f"{max_dd_pulse:.1%}")
@@ -680,160 +728,73 @@ with tab4:
                     delta_color="inverse")
         st.info(f"En el peor momento Pulse Fund perdió **{abs(max_dd_pulse):.1%}** "
                 f"vs **{abs(dd_btc_val):.1%}** de BTC. El filtro de volatilidad protegió el capital.")
-
         fig_c = go.Figure()
         fig_c.add_trace(go.Scatter(
             x=dd_pulse_serie.index, y=dd_pulse_serie,
-            name=" Pulse Fund",line=dict(color="#FF2E93", width=2),
-            fill="tozeroy", fillcolor="rgba(255,46,147,0.12)"
+            name="💓 Pulse Fund", line=dict(color="#00FF88", width=2),
+            fill="tozeroy", fillcolor="rgba(0,255,136,0.08)"
         ))
         if acum_btc is not None:
             dd_btc_s = calcular_drawdown(acum_btc)
             fig_c.add_trace(go.Scatter(
                 x=dd_btc_s.index, y=dd_btc_s,
-                name=" BTC", line=dict(color="#7B61FF", width=2),
-                fill="tozeroy", fillcolor="rgba(123,97,255,0.12)"
+                name="🟠 BTC", line=dict(color="#F7931A", width=2),
+                fill="tozeroy", fillcolor="rgba(247,147,26,0.08)"
             ))
-        fig_c.update_layout(title="Comparación de pérdidas máximas",
-                            yaxis_tickformat=".0%", hovermode="x unified", height=400)
+        fig_c.update_layout(title="Comparación de Pérdidas Máximas",
+                            yaxis_tickformat=".0%", hovermode="x unified")
+        apply_dark(fig_c)
         st.plotly_chart(fig_c, use_container_width=True)
 
     elif "Moderado" in perfil:
-        st.subheader("Perfil Moderado — Balance riesgo-retorno")
+        st.subheader("Perfil Moderado — Balance Riesgo-Retorno")
         col1, col2, col3 = st.columns(3)
         col1.metric("Retorno Pulse Fund", f"{retorno_total_pulse:+.1%}")
         col2.metric("Sharpe Ratio",       f"{sharpe_pulse:.2f}")
         col3.metric("Volatilidad",        f"{vol_pulse:.1%}")
         st.info(f"Pulse Fund creció **{retorno_total_pulse:+.1%}** desde {fecha_inicio} "
                 f"con Sharpe Ratio de **{sharpe_pulse:.2f}**.")
-
         fig_m = go.Figure()
         fig_m.add_trace(go.Scatter(
             x=acum_pulse.index, y=acum_pulse * monto_inicial,
-            name="💓 Pulse Fund", line=dict(color="#FF2E93", width=3)
+            name="💓 Pulse Fund", line=dict(color="#00FF88", width=3)
         ))
         if acum_btc is not None:
             fig_m.add_trace(go.Scatter(
                 x=acum_btc.index, y=acum_btc * monto_inicial,
-                name=" BTC", line=dict(color="#7B61FF", width=2, dash="dash")
+                name="🟠 BTC", line=dict(color="#F7931A", width=2, dash="dash")
             ))
-        fig_m.add_hline(y=monto_inicial, line_dash="dot", line_color="gray")
+        fig_m.add_hline(y=monto_inicial, line_dash="dot", line_color="rgba(255,255,255,0.15)")
         fig_m.update_layout(title=f"Crecimiento de ${monto_inicial:,}",
                             yaxis_tickprefix="$", yaxis_tickformat=",.0f",
-                            hovermode="x unified", height=400)
+                            hovermode="x unified")
+        apply_dark(fig_m)
         st.plotly_chart(fig_m, use_container_width=True)
 
     else:
-        st.subheader("Perfil Agresivo — Máximo momentum")
+        st.subheader("🚀 Perfil Agresivo — Máximo Momentum")
         col1, col2 = st.columns(2)
         col1.metric("Retorno Pulse Fund", f"{retorno_total_pulse:+.1%}")
         col2.metric("Tiempo invertido",   f"{1-pct_efectivo:.1%}")
-        st.info("Pulse Fund rota cada mes hacia la cripto con mayor momentum. "
+        st.info("⚡ Pulse Fund rota cada mes hacia la cripto con mayor momentum. "
                 "Siempre en la más fuerte — no atado a una sola.")
-
         conteo_agr = señal_diaria.value_counts()
         fig_a = px.pie(values=conteo_agr.values, names=conteo_agr.index,
-                       title="Distribución de tiempo por posición",
+                       title="Distribución de Tiempo por Posición",
                        color=conteo_agr.index,
-                       color_discrete_map={
-    "BTC": "#FF4FA3",
-    "ETH": "#7B61FF",
-    "SOL": "#D946EF",
-    "EFECTIVO": "#6B7280"
-})
-        fig_a.update_traces(textinfo="label+percent")
-        fig_a.update_layout(height=400)
+                       color_discrete_map={"BTC": "#F7931A", "ETH": "#4A6CF7",
+                                           "SOL": "#9945FF", "EFECTIVO": "#2A2840"})
+        fig_a.update_traces(textinfo="label+percent",
+                            textfont=dict(family="Rajdhani, sans-serif", size=13))
+        apply_dark(fig_a)
         st.plotly_chart(fig_a, use_container_width=True)
 
-# ── TAB 5: SIMULACIÓN MONTECARLO ───────────────────────────────
-
-with tab5:
-    st.header(" Simulación Montecarlo")
-    st.markdown("""
-    <div style="background:#0f172a; padding:1.2rem; border-radius:12px; border:1px solid #334155;">
-        <p style="color:#94a3b8; font-size:0.85rem; margin:0 0 0.5rem 0;">¿QUÉ ES ESTO?</p>
-        <p style="color:#e2e8f0; margin:0;">
-            Simulamos <strong>1,000 escenarios posibles</strong> del comportamiento futuro
-            de Pulse Fund basados en su historial real. No es una predicción.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        num_sim = st.number_input("Simulaciones:", 100, 5000, 1000, step=100)
-    with col2:
-        dias_sim = st.number_input("Días a simular:", 30, 730, 180, step=30)
-    with col3:
-        inversion_sim = st.number_input("Inversión inicial:", 100, 1_000_000, monto_inicial, step=500)
-
-    if st.button("Ejecutar Simulación", type="primary"):
-        if retornos_pulse is None or len(retornos_pulse) < 30:
-            st.error("No hay suficientes datos históricos de Pulse Fund.")
-        else:
-            with st.spinner("Ejecutando simulación Montecarlo..."):
-                np.random.seed(42)
-                media = retornos_pulse.mean()
-                std = retornos_pulse.std()
-
-                sims = np.random.normal(media, std, (int(num_sim), int(dias_sim)))
-                capital_sims = inversion_sim * np.cumprod(1 + sims, axis=1)
-
-                p10 = np.percentile(capital_sims[:, -1], 10)
-                p50 = np.percentile(capital_sims[:, -1], 50)
-                p90 = np.percentile(capital_sims[:, -1], 90)
-                prob_ganancia = (capital_sims[:, -1] > inversion_sim).mean()
-
-            c1, c2, c3, c4 = st.columns(4)
-            c1.metric(" Pesimista (10%)", f"${p10:,.0f}")
-            c2.metric(" Esperado (50%)", f"${p50:,.0f}")
-            c3.metric(" Optimista (90%)", f"${p90:,.0f}")
-            c4.metric(" Prob. de ganancia", f"{prob_ganancia:.1%}")
-
-            # Gráfico
-            fig_mc = go.Figure()
-            for i in range(min(150, int(num_sim))):
-                fig_mc.add_trace(go.Scatter(
-                    y=capital_sims[i], 
-                    mode="lines",
-                    line=dict(color="rgba(123,97,255,0.08)", width=1),
-                    showlegend=False
-                ))
-
-            for p, color, nombre in [
-    (10, "#C084FC", "Pesimista (10%)"),
-    (50, "#FF2E93", "Esperado (50%)"),
-    (90, "#7B61FF", "Optimista (90%)")
-]:
-                vals = np.percentile(capital_sims, p, axis=0)
-                fig_mc.add_trace(go.Scatter(
-                    y=vals, 
-                    mode="lines", 
-                    name=nombre,
-                    line=dict(color=color, width=3)
-                ))
-
-            fig_mc.add_hline(y=inversion_sim, line_dash="dash", line_color="gray",
-                           annotation_text="Inversión inicial")
-
-            fig_mc.update_layout(
-                title=f"Simulación Montecarlo — {num_sim:,} escenarios",
-                xaxis_title="Días simulados",
-                yaxis_title="Capital (USD)",
-                yaxis_tickprefix="$",
-                hovermode="x unified", 
-                height=520,
-                template="plotly_dark"
-            )
-            st.plotly_chart(fig_mc, use_container_width=True)
-
-            st.success(f"Escenario esperado: **${p50:,.0f}** después de {dias_sim} días.")
-
-# ── DISCLAIMER ───────────────────────────────────────────────
+# ── DISCLAIMER ────────────────────────────────────────────────
 st.divider()
 st.caption(
-    "🤖 **Disclaimer IA:** Claude Sonnet (Anthropic) — AI Chat with DeepSeek & GPT 5 — asistencia en estructura del código, "
-    "lógica de backtesting y visualizaciones | " 
-    " Grok para analisis y realizacion de la Simulación Monte Carlo| " 
+    "🤖 **Disclaimer IA:** Claude Sonnet (Anthropic) — asistencia en estructura del código, "
+    "lógica de backtesting y visualizaciones | "
+" Grok simulación montecarlo  | "
     "El equipo Pulse Fund definió la estrategia, validó los cálculos "
-    "y tomó todas las decisiones analíticas.")
+    "y tomó todas las decisiones analíticas."
+)
