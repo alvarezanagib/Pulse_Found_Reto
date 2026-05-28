@@ -415,9 +415,11 @@ with tab2:
     fig = px.line(bt_df, x=bt_df.index, y=bt_df.columns,
                   title=f"Evolución de ${monto_inicial:,.0f} invertidos",
                   color_discrete_map={
-                      "💓 Pulse Fund": "#00FF88",
-                      "🟠 Buy & Hold BTC": "#F7931A",
-                      "🔵 Buy & Hold ETH": "#627EEA"
+                    
+    "💓 Pulse Fund": "#FF2E93",
+    "🟠 Buy & Hold BTC": "#FF4FA3",
+    "🔵 Buy & Hold ETH": "#7B61FF"
+}
                   })
     fig.add_hline(y=monto_inicial, line_dash="dash", line_color="gray")
     fig.update_layout(hovermode="x unified", height=480)
@@ -505,15 +507,15 @@ with tab4:
         fig_c = go.Figure()
         fig_c.add_trace(go.Scatter(
             x=dd_pulse_serie.index, y=dd_pulse_serie,
-            name=" Pulse Fund", line=dict(color="#00FF88", width=2),
-            fill="tozeroy", fillcolor="rgba(0,255,136,0.1)"
+            name=" Pulse Fund",line=dict(color="#FF2E93", width=2),
+            fill="tozeroy", fillcolor="rgba(255,46,147,0.12)"
         ))
         if acum_btc is not None:
             dd_btc_s = calcular_drawdown(acum_btc)
             fig_c.add_trace(go.Scatter(
                 x=dd_btc_s.index, y=dd_btc_s,
-                name="🟠 BTC", line=dict(color="#F7931A", width=2),
-                fill="tozeroy", fillcolor="rgba(247,147,26,0.1)"
+                name="🟠 BTC", line=dict(color="#7B61FF", width=2),
+                fill="tozeroy", fillcolor="rgba(123,97,255,0.12)"
             ))
         fig_c.update_layout(title="Comparación de pérdidas máximas",
                             yaxis_tickformat=".0%", hovermode="x unified", height=400)
@@ -531,12 +533,12 @@ with tab4:
         fig_m = go.Figure()
         fig_m.add_trace(go.Scatter(
             x=acum_pulse.index, y=acum_pulse * monto_inicial,
-            name="💓 Pulse Fund", line=dict(color="#00FF88", width=3)
+            name="💓 Pulse Fund", line=dict(color="#FF2E93", width=3)
         ))
         if acum_btc is not None:
             fig_m.add_trace(go.Scatter(
                 x=acum_btc.index, y=acum_btc * monto_inicial,
-                name="🟠 BTC", line=dict(color="#F7931A", width=2, dash="dash")
+                name="🟠 BTC", line=dict(color="#7B61FF", width=2, dash="dash")
             ))
         fig_m.add_hline(y=monto_inicial, line_dash="dot", line_color="gray")
         fig_m.update_layout(title=f"Crecimiento de ${monto_inicial:,}",
@@ -556,8 +558,12 @@ with tab4:
         fig_a = px.pie(values=conteo_agr.values, names=conteo_agr.index,
                        title="Distribución de tiempo por posición",
                        color=conteo_agr.index,
-                       color_discrete_map={"BTC": "#F7931A", "ETH": "#627EEA",
-                                           "SOL": "#9945FF", "EFECTIVO": "#444444"})
+                       color_discrete_map={
+    "BTC": "#FF4FA3",
+    "ETH": "#7B61FF",
+    "SOL": "#D946EF",
+    "EFECTIVO": "#6B7280"
+})
         fig_a.update_traces(textinfo="label+percent")
         fig_a.update_layout(height=400)
         st.plotly_chart(fig_a, use_container_width=True)
@@ -613,13 +619,15 @@ with tab5:
                 fig_mc.add_trace(go.Scatter(
                     y=capital_sims[i], 
                     mode="lines",
-                    line=dict(color="rgba(37,99,235,0.08)", width=1),
+                    line=dict(color="rgba(123,97,255,0.08)", width=1),
                     showlegend=False
                 ))
 
-            for p, color, nombre in [(10, "#ef4444", "Pesimista (10%)"),
-                                     (50, "#00FF88", "Esperado (50%)"),
-                                     (90, "#3b82f6", "Optimista (90%)")]:
+            for p, color, nombre in [
+    (10, "#C084FC", "Pesimista (10%)"),
+    (50, "#FF2E93", "Esperado (50%)"),
+    (90, "#7B61FF", "Optimista (90%)")
+]:
                 vals = np.percentile(capital_sims, p, axis=0)
                 fig_mc.add_trace(go.Scatter(
                     y=vals, 
