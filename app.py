@@ -46,14 +46,23 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Imagen ──────────────────────────────────────────────────
-# Agrega esto al inicio del sidebar, antes del st.sidebar.header
-if logo_b64:
-    st.sidebar.markdown(f"""
-    <div style="text-align:center; padding:1rem 0;">
-        <img src="data:image/png;base64,{logo_b64}" 
-             style="width:120px; border-radius:16px;">
-    </div>
-    """, unsafe_allow_html=True)
+with st.sidebar:
+    def cargar_logo(path):
+        try:
+            with open(path, "rb") as f:
+                return base64.b64encode(f.read()).decode()
+        except:
+            return None
+
+    logo_b64 = cargar_logo("logo.png")
+
+    if logo_b64:
+        st.markdown(f"""
+        <div style="text-align:center; padding:1rem 0 0.5rem 0;">
+            <img src="data:image/png;base64,{logo_b64}" 
+                 style="width:150px; border-radius:16px;">
+        </div>
+        """, unsafe_allow_html=True)
 # ── SIDEBAR ──────────────────────────────────────────────────
 st.sidebar.header("⚙️ Parámetros")
 
