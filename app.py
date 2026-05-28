@@ -1,5 +1,5 @@
 # ============================================================
-# 💓 PULSE FUND — Concurso Analítica Financiera ITM 2026
+# PULSE FUND — Concurso Analítica Financiera ITM 2026
 # ============================================================
 
 import streamlit as st
@@ -173,19 +173,20 @@ def calcular_drawdown(serie):
     return (serie - pico) / pico
 
 colores = {
-    "BTC": "#F7931A", 
-    "ETH": "#627EEA",
-    "SOL": "#9945FF", 
-    "LTC": "#A6A9AA",      
-    "ADA": "#0033AD",      
-    "Pulse Fund": "#00FF88"
+    "BTC": "#FF4FA3",        # Rosa neón del logo
+    "ETH": "#7B61FF",        # Morado eléctrico
+    "SOL": "#D946EF",        # Fucsia intenso
+    "LTC": "#C084FC",        # Lavanda brillante
+    "ADA": "#5B21B6",        # Morado oscuro elegante
+    "Pulse Fund": "#FF2E93"  # Rosa principal del branding
 }
+
 fill_colors = {
-    "BTC": "rgba(247,147,26,0.15)",
-    "ETH": "rgba(98,126,234,0.15)",
-    "SOL": "rgba(153,69,255,0.15)",
-    "LTC": "rgba(166,169,170,0.15)",
-    "ADA": "rgba(0,51,173,0.15)"
+    "BTC": "rgba(255,79,163,0.15)",
+    "ETH": "rgba(123,97,255,0.15)",
+    "SOL": "rgba(217,70,239,0.15)",
+    "LTC": "rgba(192,132,252,0.15)",
+    "ADA": "rgba(91,33,182,0.15)"
 }
 
 # ── ESTRATEGIA PULSE FUND ─────────────────────────────────────
@@ -359,7 +360,7 @@ with tab1:
 
 # ── TAB 2 ─────────────────────────────────────────────────────
 with tab2:
-    st.header("📊 Backtesting — Pulse Fund")
+    st.header("Backtesting — Pulse Fund")
 
     # ==================== RESULTADO PRINCIPAL ====================
     st.subheader("¿Qué habría pasado si invertiste en Pulse Fund?")
@@ -544,7 +545,7 @@ with tab4:
         st.plotly_chart(fig_m, use_container_width=True)
 
     else:
-        st.subheader("🚀 Perfil Agresivo — Máximo momentum")
+        st.subheader("Perfil Agresivo — Máximo momentum")
         col1, col2 = st.columns(2)
         col1.metric("Retorno Pulse Fund", f"{retorno_total_pulse:+.1%}")
         col2.metric("Tiempo invertido",   f"{1-pct_efectivo:.1%}")
@@ -601,10 +602,10 @@ with tab5:
                 prob_ganancia = (capital_sims[:, -1] > inversion_sim).mean()
 
             c1, c2, c3, c4 = st.columns(4)
-            c1.metric("😟 Pesimista (10%)", f"${p10:,.0f}")
-            c2.metric("📊 Esperado (50%)", f"${p50:,.0f}")
-            c3.metric("😄 Optimista (90%)", f"${p90:,.0f}")
-            c4.metric("✅ Prob. de ganancia", f"{prob_ganancia:.1%}")
+            c1.metric(" Pesimista (10%)", f"${p10:,.0f}")
+            c2.metric(" Esperado (50%)", f"${p50:,.0f}")
+            c3.metric(" Optimista (90%)", f"${p90:,.0f}")
+            c4.metric(" Prob. de ganancia", f"{prob_ganancia:.1%}")
 
             # Gráfico
             fig_mc = go.Figure()
