@@ -693,7 +693,7 @@ with tab5:
 # ── DISCLAIMER ───────────────────────────────────────────────
 st.divider()
 st.caption(
-    "🤖 **Disclaimer IA:** Claude Sonnet (Anthropic) — asistencia en estructura del código, "
+    "🤖 **Disclaimer IA:** Claude Sonnet (Anthropic) — AI Chat with DeepSeek & GPT 5 — asistencia en estructura del código, "
     "lógica de backtesting y visualizaciones | " 
     " Grok para analisis y realizacion de la Simulación Monte Carlo| " 
     "El equipo Pulse Fund definió la estrategia, validó los cálculos "
