@@ -526,100 +526,76 @@ with tab4:
         fig_a.update_layout(height=400)
         st.plotly_chart(fig_a, use_container_width=True)
 
-# ── TAB 5 ─────────────────────────────────────────────────────
+# ── TAB 5: SIMULACIÓN MONTECARLO ───────────────────────────────
 with tab5:
     st.header("Simulación Montecarlo")
     st.markdown("""
-    <div class="pulse-card">
+    <div style="background:#0f172a; padding:1.2rem; border-radius:12px; border:1px solid #334155;">
         <p style="color:#94a3b8; font-size:0.85rem; margin:0 0 0.5rem 0;">¿QUÉ ES ESTO?</p>
         <p style="color:#e2e8f0; margin:0;">
             Simulamos <strong>1,000 escenarios posibles</strong> del comportamiento futuro 
-            de Pulse Fund basados en su historial real. No predice el futuro — 
-            muestra el rango de resultados posibles.
+            de Pulse Fund basados en su historial real.
         </p>
     </div>
     """, unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        num_sim = st.number_input("Simulaciones:", 100, 2000, 1000, step=100)
+        num_sim = st.number_input("Simulaciones:", 100, 5000, 1000, step=100)
     with col2:
-        dias_sim = st.number_input("Días a simular:", 30, 365, 180, step=30)
+        dias_sim = st.number_input("Días a simular:", 30, 730, 180, step=30)
     with col3:
         inversion_sim = st.number_input("Inversión:", 100, 1_000_000, monto_inicial, step=500)
 
-    if st.button("🚀 Ejecutar simulación", type="primary"):
-        with st.spinner("Simulando escenarios..."):
+    if st.button("Ejecutar simulación", type="primary"):
+        if 'retornos_pulse' not in globals() or retornos_pulse is None or len(retornos_pulse) < 30:
+            st.error("No hay suficientes datos de retornos de Pulse Fund para simular.")
+        else:
+            with st.spinner("Simulando escenarios..."):
+                np.random.seed(42)
+                media = retornos_pulse.mean()
+                std = retornos_pulse.std()
 
-            # Usa los retornos REALES de Pulse Fund — no inventados
-            media = retornos_pulse.mean()
-            std   = retornos_pulse.std()
+                sims = np.random.normal(media, std, (int(num_sim), int(dias_sim)))
+                capital_sims = inversion_sim * np.cumprod(1 + sims, axis=1)
 
-            np.random.seed(42)
-            sims = np.random.normal(media, std, (int(num_sim), int(dias_sim)))
-            capital_sims = inversion_sim * np.cumprod(1 + sims, axis=1)
+                p10 = np.percentile(capital_sims[:, -1], 10)
+                p50 = np.percentile(capital_sims[:, -1], 50)
+                p90 = np.percentile(capital_sims[:, -1], 90)
+                prob_ganancia = (capital_sims[:, -1] > inversion_sim).mean()
 
-            p10 = np.percentile(capital_sims[:, -1], 10)
-            p50 = np.percentile(capital_sims[:, -1], 50)
-            p90 = np.percentile(capital_sims[:, -1], 90)
-            prob_ganancia = (capital_sims[:, -1] > inversion_sim).mean()
+            c1, c2, c3, c4 = st.columns(4)
+            c1.metric("😟 Pesimista (10%)", f"${p10:,.0f}")
+            c2.metric("📊 Esperado (50%)", f"${p50:,.0f}")
+            c3.metric("😄 Optimista (90%)", f"${p90:,.0f}")
+            c4.metric("✅ Prob. de ganancia", f"{prob_ganancia:.1%}")
 
-        # Métricas
-        c1, c2, c3, c4 = st.columns(4)
-        c1.metric("😟 Caso pesimista (10%)",  f"${p10:,.0f}")
-        c2.metric("📊 Caso esperado (50%)",   f"${p50:,.0f}")
-        c3.metric("😄 Caso optimista (90%)",  f"${p90:,.0f}")
-        c4.metric("✅ Prob. de ganancia",      f"{prob_ganancia:.1%}")
+            # Gráfico
+            fig_mc = go.Figure()
+            for i in range(min(150, int(num_sim))):
+                fig_mc.add_trace(go.Scatter(
+                    y=capital_sims[i], mode="lines",
+                    line=dict(color="rgba(37,99,235,0.08)", width=1),
+                    showlegend=False
+                ))
 
-        # Gráfico de simulaciones
-        fig_mc = go.Figure()
+            for p, color, nombre in [(10, "#ef4444", "Pesimista (10%)"),
+                                     (50, "#00FF88", "Esperado (50%)"),
+                                     (90, "#3b82f6", "Optimista (90%)")]:
+                vals = np.percentile(capital_sims, p, axis=0)
+                fig_mc.add_trace(go.Scatter(y=vals, mode="lines", name=nombre,
+                                          line=dict(color=color, width=3)))
 
-        # Líneas de simulaciones (muestra solo 200 para no saturar)
-        for i in range(min(200, int(num_sim))):
-            fig_mc.add_trace(go.Scatter(
-                y=capital_sims[i],
-                mode="lines",
-                line=dict(color="rgba(37,99,235,0.05)", width=1),
-                showlegend=False
-            ))
+            fig_mc.add_hline(y=inversion_sim, line_dash="dash", line_color="gray",
+                           annotation_text="Inversión inicial")
 
-        # Percentiles
-        for p, color, nombre in [
-            (10, "#ef4444", "Pesimista (10%)"),
-            (50, "#00FF88", "Esperado (50%)"),
-            (90, "#3b82f6", "Optimista (90%)")
-        ]:
-            vals = np.percentile(capital_sims, p, axis=0)
-            fig_mc.add_trace(go.Scatter(
-                y=vals, mode="lines",
-                name=nombre,
-                line=dict(color=color, width=2)
-            ))
-
-        fig_mc.add_hline(
-            y=inversion_sim,
-            line_dash="dash",
-            line_color="gray",
-            annotation_text="Inversión inicial"
-        )
-
-        fig_mc.update_layout(
-            title=f"Simulación Montecarlo — {num_sim:,} escenarios",
-            xaxis_title="Días",
-            yaxis_title="Capital (USD)",
-            yaxis_tickprefix="$",
-            yaxis_tickformat=",.0f",
-            hovermode="x unified",
-            height=500,
-            template="plotly_dark",
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)"
-        )
-        st.plotly_chart(fig_mc, use_container_width=True)
-
-        st.info(f"Basado en {dias_sim} días de simulación, Pulse Fund tiene una probabilidad "
-                f"de **{prob_ganancia:.1%}** de generar ganancias. En el caso esperado, "
-                f"${inversion_sim:,} se convertirían en **${p50:,.0f}**.")
+            fig_mc.update_layout(
+                title=f"Simulación Montecarlo — {num_sim:,} escenarios",
+                xaxis_title="Días", yaxis_title="Capital (USD)",
+                yaxis_tickprefix="$", hovermode="x unified", height=520,
+                template="plotly_dark"
+            )
+            st.plotly_chart(fig_mc, use_container_width=True)
 
 # ── DISCLAIMER ───────────────────────────────────────────────
 st.divider()
