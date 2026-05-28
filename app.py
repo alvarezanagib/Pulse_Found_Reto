@@ -359,7 +359,7 @@ with tab1:
 
 # ── TAB 2 ─────────────────────────────────────────────────────
 with tab2:
-    st.header("Backtesting — Pulse Fund")
+    st.header("📊 Backtesting — Pulse Fund")
 
     # ==================== RESULTADO PRINCIPAL ====================
     st.subheader("¿Qué habría pasado si invertiste en Pulse Fund?")
@@ -369,38 +369,32 @@ with tab2:
     ganancia = valor_final - monto_inicial
     retorno_pct = (valor_final / monto_inicial) - 1
 
-     # ==================== TARJETA PRINCIPAL ====================
-    valor_final = float(acum_pulse.iloc[-1] * monto_inicial)
-    ganancia = valor_final - monto_inicial
-    retorno_pct = (valor_final / monto_inicial) - 1
-
+    # Tarjeta principal
     st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #6b21a8, #9333ea, #c026d3); 
-                padding: 2.5rem; border-radius: 20px; text-align: center; 
-                border: 3px solid #f472b6; margin: 1.5rem 0; box-shadow: 0 10px 40px rgba(192, 38, 211, 0.4);">
-        
-        <p style="color: #f3e8ff; margin-bottom: 0.5rem; font-size: 1.15rem; font-weight: 500;">
+    <div style="background: linear-gradient(135deg, #1e3a8a, #312e81); 
+                padding: 2rem; border-radius: 20px; text-align: center; 
+                border: 2px solid #6366f1; margin: 1.5rem 0;">
+        <p style="color: #93c5fd; margin-bottom: 0.5rem; font-size: 1.1rem;">
             Inversión inicial • {fecha_inicio}
         </p>
-        <h1 style="color: white; margin: 0.4rem 0 1.2rem 0; font-size: 3rem;">
+        <h1 style="color: white; margin: 0.3rem 0; font-size: 2.8rem;">
             ${monto_inicial:,.0f}
         </h1>
-        
-        <div style="background: rgba(255,255,255,0.15); border-radius: 16px; padding: 1.8rem; margin: 1rem auto; max-width: 420px;">
-            <p style="color: #fce7f3; font-size: 3.4rem; font-weight: 700; margin: 0;">
-                ${valor_final:,.0f}
-            </p>
-            <p style="color: #fce7f3; font-size: 1.7rem; font-weight: 600; margin: 0.4rem 0 0 0;">
-                +${ganancia:,.0f} ({retorno_pct:+.1%})
-            </p>
-        </div>
-        
-        <p style="color: #e9d5ff; margin-top: 1.8rem; font-size: 1.2rem; font-weight: 500;">
-            💓 Pulse Fund Strategy
+        <hr style="border-color: rgba(255,255,255,0.2); margin: 1.2rem 0;">
+        <p style="color: #86efac; font-size: 3rem; font-weight: 700; margin: 0;">
+            ${valor_final:,.0f}
+        </p>
+        <p style="color: #86efac; font-size: 1.6rem; font-weight: 600;">
+            +${ganancia:,.0f} ({retorno_pct:+.1%})
+        </p>
+        <p style="color: #a5b4fc; margin-top: 1rem; font-size: 1.1rem;">
+            Pulse Fund Strategy
         </p>
     </div>
     """, unsafe_allow_html=True)
-    
+
+    st.divider()
+
     # Métricas adicionales
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Retorno Total", f"{retorno_total_pulse:+.1%}")
