@@ -567,7 +567,7 @@ with tab5:
     with col3:
         inversion_sim = st.number_input("Inversión inicial:", 100, 1_000_000, monto_inicial, step=500)
 
-    if st.button("🚀 Ejecutar Simulación", type="primary"):
+    if st.button("Ejecutar Simulación", type="primary"):
         if retornos_pulse is None or len(retornos_pulse) < 30:
             st.error("No hay suficientes datos históricos de Pulse Fund.")
         else:
@@ -631,6 +631,6 @@ with tab5:
 st.divider()
 st.caption(
     "🤖 **Disclaimer IA:** Claude Sonnet (Anthropic) — asistencia en estructura del código, "
-    "lógica de backtesting y visualizaciones | "
+    "lógica de backtesting y visualizaciones | " " Grok para analisis y realizacion de la Simulación Monte Carlo"
     "El equipo Pulse Fund definió la estrategia, validó los cálculos "
     "y tomó todas las decisiones analíticas.")
