@@ -14,21 +14,15 @@ import base64
 # ── HEADER ──────────────────────────────────────────────────
 st.markdown("""
 <div style="
-    background: linear-gradient(135deg, #fcfbff 0%, #f5f3ff 100%);
-    border: 1px solid rgba(168,85,247,0.18);
+    background: linear-gradient(135deg, #fcfbff 0%, #f5f3ff 60%);
+    border: 1px solid rgba(168,85,247,0.15);
     border-radius: 20px;
     padding: 2rem 2.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 8px 28px rgba(168,85,247,0.08);
+    box-shadow: 0 8px 32px rgba(168,85,247,0.08);
 ">
-    
-    <div style="
-        display:flex;
-        align-items:center;
-        gap:1rem;
-        margin-bottom:0.7rem;
-    ">
-        
+    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:0.5rem;">
+        <span style="font-size:3rem;"></span>
         <h1 style="
             background: linear-gradient(90deg, #7c3aed, #ec4899);
             -webkit-background-clip: text;
@@ -37,86 +31,18 @@ st.markdown("""
             font-weight: 800;
             margin: 0;
             letter-spacing: -1px;
-            line-height:1.1;
-        ">
-            Pulse Fund
-        </h1>
-
+        ">Pulse Fund</h1>
     </div>
-
-    <p style="
-        color:#374151;
-        font-size:1.1rem;
-        margin:0;
-        font-weight:400;
-        line-height:1.7;
-    ">
+    <p style="color:#4b5563; font-size:1.1rem; margin:0; font-weight:400;">
         Invertimos cuando el mercado tiene pulso fuerte.
-        <span style="
-            color:#db2777;
-            font-weight:700;
-        ">
-            Cuando hay tormenta, esperamos.
-        </span>
+        <span style="color:#db2777; font-weight:600;">Cuando hay tormenta, esperamos.</span>
     </p>
-
-    <div style="
-        margin-top:1.2rem;
-        display:flex;
-        flex-wrap:wrap;
-        gap:0.6rem;
-    ">
-
-        <span style="
-            background:rgba(124,58,237,0.10);
-            color:#7c3aed;
-            padding:0.45rem 0.9rem;
-            border-radius:999px;
-            font-size:0.9rem;
-            font-weight:600;
-            border:1px solid rgba(124,58,237,0.15);
-        ">
-            Momentum
-        </span>
-
-        <span style="
-            background:rgba(236,72,153,0.10);
-            color:#db2777;
-            padding:0.45rem 0.9rem;
-            border-radius:999px;
-            font-size:0.9rem;
-            font-weight:600;
-            border:1px solid rgba(236,72,153,0.15);
-        ">
-            Filtro Volatilidad
-        </span>
-
-        <span style="
-            background:rgba(124,58,237,0.10);
-            color:#7c3aed;
-            padding:0.45rem 0.9rem;
-            border-radius:999px;
-            font-size:0.9rem;
-            font-weight:600;
-            border:1px solid rgba(124,58,237,0.15);
-        ">
-            Rebalanceo Mensual
-        </span>
-
-        <span style="
-            background:rgba(236,72,153,0.10);
-            color:#db2777;
-            padding:0.45rem 0.9rem;
-            border-radius:999px;
-            font-size:0.9rem;
-            font-weight:600;
-            border:1px solid rgba(236,72,153,0.15);
-        ">
-            BTC · ETH · SOL
-        </span>
-
+    <div style="margin-top:1rem;">
+        <span class="pulse-tag"> Momentum</span>
+        <span class="pulse-tag"> Filtro Volatilidad</span>
+        <span class="pulse-tag"> Rebalanceo Mensual</span>
+        <span class="pulse-tag"> BTC · ETH · SOL</span>
     </div>
-
 </div>
 """, unsafe_allow_html=True)
 
