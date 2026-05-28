@@ -70,9 +70,11 @@ with st.sidebar:
 st.sidebar.header("⚙️ Parámetros")
 
 criptos_disponibles = {
-    "Bitcoin (BTC)":  "BTC-USD",
+    "Bitcoin (BTC)": "BTC-USD",
     "Ethereum (ETH)": "ETH-USD",
-    "Solana (SOL)":   "SOL-USD"
+    "Solana (SOL)": "SOL-USD",
+    "Litecoin (LTC)": "LTC-USD",
+    "Cardano (ADA)": "ADA-USD"
 }
 
 criptos_seleccionadas = st.sidebar.multiselect(
@@ -171,13 +173,19 @@ def calcular_drawdown(serie):
     return (serie - pico) / pico
 
 colores = {
-    "BTC": "#F7931A", "ETH": "#627EEA",
-    "SOL": "#9945FF", "Pulse Fund": "#00FF88"
+    "BTC": "#F7931A", 
+    "ETH": "#627EEA",
+    "SOL": "#9945FF", 
+    "LTC": "#A6A9AA",      
+    "ADA": "#0033AD",      
+    "Pulse Fund": "#00FF88"
 }
 fill_colors = {
     "BTC": "rgba(247,147,26,0.15)",
     "ETH": "rgba(98,126,234,0.15)",
-    "SOL": "rgba(153,69,255,0.15)"
+    "SOL": "rgba(153,69,255,0.15)",
+    "LTC": "rgba(166,169,170,0.15)",
+    "ADA": "rgba(0,51,173,0.15)"
 }
 
 # ── ESTRATEGIA PULSE FUND ─────────────────────────────────────
