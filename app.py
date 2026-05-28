@@ -408,9 +408,9 @@ with tab2:
     # Gráfico comparativo
     bt_df = pd.DataFrame({"💓 Pulse Fund": acum_pulse * monto_inicial})
     if acum_btc is not None:
-        bt_df["🟠 Buy & Hold BTC"] = acum_btc * monto_inicial
+        bt_df[" Buy & Hold BTC"] = acum_btc * monto_inicial
     if acum_eth is not None:
-        bt_df["🔵 Buy & Hold ETH"] = acum_eth * monto_inicial
+        bt_df[" Buy & Hold ETH"] = acum_eth * monto_inicial
 
     fig = px.line(bt_df, x=bt_df.index, y=bt_df.columns,
                   title=f"Evolución de ${monto_inicial:,.0f} invertidos",
@@ -513,7 +513,7 @@ with tab4:
             dd_btc_s = calcular_drawdown(acum_btc)
             fig_c.add_trace(go.Scatter(
                 x=dd_btc_s.index, y=dd_btc_s,
-                name="🟠 BTC", line=dict(color="#7B61FF", width=2),
+                name=" BTC", line=dict(color="#7B61FF", width=2),
                 fill="tozeroy", fillcolor="rgba(123,97,255,0.12)"
             ))
         fig_c.update_layout(title="Comparación de pérdidas máximas",
@@ -537,7 +537,7 @@ with tab4:
         if acum_btc is not None:
             fig_m.add_trace(go.Scatter(
                 x=acum_btc.index, y=acum_btc * monto_inicial,
-                name="🟠 BTC", line=dict(color="#7B61FF", width=2, dash="dash")
+                name=" BTC", line=dict(color="#7B61FF", width=2, dash="dash")
             ))
         fig_m.add_hline(y=monto_inicial, line_dash="dot", line_color="gray")
         fig_m.update_layout(title=f"Crecimiento de ${monto_inicial:,}",
