@@ -11,6 +11,145 @@ import plotly.graph_objects as go
 from datetime import date, timedelta
 import base64
 
+st.markdown("""
+<style>
+
+/* =========================
+   COLOR PRINCIPAL APP
+========================= */
+
+/* Tabs activas */
+button[data-baseweb="tab"] {
+    color: #6B7280 !important;
+    font-weight: 600 !important;
+}
+
+button[data-baseweb="tab"][aria-selected="true"] {
+    color: #FF2E93 !important;
+    border-bottom: 3px solid #FF2E93 !important;
+}
+
+/* Línea debajo tabs */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 24px;
+}
+
+.stTabs [data-baseweb="tab-highlight"] {
+    background-color: #FF2E93 !important;
+}
+
+/* =========================
+   BOTONES
+========================= */
+
+.stButton > button {
+    background: linear-gradient(90deg, #7B61FF, #FF2E93) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    padding: 0.6rem 1.2rem !important;
+    box-shadow: 0 4px 14px rgba(123,97,255,0.25);
+    transition: 0.3s ease;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255,46,147,0.35);
+}
+
+/* =========================
+   SLIDERS
+========================= */
+
+.stSlider [data-baseweb="slider"] div[role="slider"] {
+    background-color: #FF2E93 !important;
+    border: 3px solid white !important;
+}
+
+.stSlider [data-baseweb="slider"] > div > div {
+    background: linear-gradient(90deg, #7B61FF, #FF2E93) !important;
+}
+
+/* =========================
+   RADIO BUTTONS
+========================= */
+
+.stRadio div[role="radiogroup"] label[data-baseweb="radio"] div:first-child {
+    background-color: white !important;
+    border-color: #C084FC !important;
+}
+
+.stRadio div[role="radiogroup"] label[data-baseweb="radio"] input:checked + div {
+    background-color: #FF2E93 !important;
+    border-color: #FF2E93 !important;
+}
+
+/* =========================
+   MULTISELECT TAGS
+========================= */
+
+.stMultiSelect [data-baseweb="tag"] {
+    background: linear-gradient(90deg, #7B61FF, #FF2E93) !important;
+    border-radius: 12px !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+.stMultiSelect [data-baseweb="tag"] span {
+    color: white !important;
+}
+
+.stMultiSelect [data-baseweb="tag"] svg {
+    fill: white !important;
+}
+
+/* =========================
+   INPUTS Y SELECTORES
+========================= */
+
+div[data-baseweb="select"] > div {
+    border-radius: 14px !important;
+    border: 1px solid rgba(123,97,255,0.35) !important;
+    box-shadow: 0 0 10px rgba(123,97,255,0.08);
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #faf5ff 0%, #f5f3ff 100%);
+}
+
+/* =========================
+   MÉTRICAS
+========================= */
+
+[data-testid="metric-container"] {
+    border-radius: 16px;
+    padding: 1rem;
+    background: rgba(255,255,255,0.65);
+    border: 1px solid rgba(123,97,255,0.12);
+    box-shadow: 0 4px 20px rgba(123,97,255,0.08);
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(#7B61FF, #FF2E93);
+    border-radius: 10px;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 st.markdown("""
 <style>
