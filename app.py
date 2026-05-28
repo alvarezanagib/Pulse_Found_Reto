@@ -359,7 +359,7 @@ with tab1:
 
 # ── TAB 2 ─────────────────────────────────────────────────────
 with tab2:
-    st.header("📊 Backtesting — Pulse Fund")
+    st.header("Backtesting — Pulse Fund")
 
     # ==================== RESULTADO PRINCIPAL ====================
     st.subheader("¿Qué habría pasado si invertiste en Pulse Fund?")
