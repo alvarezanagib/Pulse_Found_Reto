@@ -476,7 +476,13 @@ with tab3:
     st.subheader("🔗 Correlación entre criptomonedas")
     corr  = retornos.corr()
     fig10 = px.imshow(corr, title="Correlación de retornos diarios",
-                      color_continuous_scale="RdYlGn",
+                     color_continuous_scale=[
+    [0.0, "#5B21B6"],
+    [0.25, "#7B61FF"],
+    [0.5, "#C084FC"],
+    [0.75, "#FF4FA3"],
+    [1.0, "#FF2E93"]
+],
                       zmin=-1, zmax=1, text_auto=".2f")
     fig10.update_layout(height=380)
     st.plotly_chart(fig10, use_container_width=True)
