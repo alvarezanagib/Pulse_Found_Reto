@@ -14,17 +14,17 @@ import base64
 # ── HEADER ──────────────────────────────────────────────────
 st.markdown("""
 <div style="
-    background: linear-gradient(135deg, #f8fafc 0%, #eef4ff 60%);
-    border: 1px solid rgba(37,99,235,0.15);
+    background: linear-gradient(135deg, #faf7ff 0%, #f3e8ff 60%);
+    border: 1px solid rgba(168,85,247,0.18);
     border-radius: 20px;
     padding: 2rem 2.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 8px 32px rgba(37,99,235,0.08);
+    box-shadow: 0 8px 32px rgba(168,85,247,0.10);
 ">
     <div style="display:flex; align-items:center; gap:1rem; margin-bottom:0.5rem;">
         <span style="font-size:3rem;"></span>
         <h1 style="
-            background: linear-gradient(90deg, #2563eb, #0ea5e9);
+            background: linear-gradient(90deg, #7c3aed, #ec4899);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-size: 3rem;
@@ -33,9 +33,9 @@ st.markdown("""
             letter-spacing: -1px;
         ">Pulse Fund</h1>
     </div>
-    <p style="color:#475569; font-size:1.1rem; margin:0; font-weight:400;">
+    <p style="color:#4b5563; font-size:1.1rem; margin:0; font-weight:400;">
         Invertimos cuando el mercado tiene pulso fuerte.
-        <span style="color:#2563eb; font-weight:600;">Cuando hay tormenta, esperamos.</span>
+        <span style="color:#db2777; font-weight:600;">Cuando hay tormenta, esperamos.</span>
     </p>
     <div style="margin-top:1rem;">
         <span class="pulse-tag"> Momentum</span>
